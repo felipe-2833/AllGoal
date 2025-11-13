@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="forest">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <title>AllGoal</title>
+</head>
+<body>
+
+<nav class="navbar bg-base-300 shadow-sm">
+    <div class="flex-1">
+        <a href="/" class="btn btn-ghost text-xl">AllGoal</a>
+    </div>
+
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+            <!--<li><a href="/moto" th:text="#{moto}"></a></li>
+            <li><a href="/patio" th:text="#{patio}"></a>
+            <li><a href="/movimento" th:text="#{moviment}"></a></li>-->
+        </ul>
+    </div>
+
+    <div class="flex-none">
+        <ul class="menu menu-horizontal px-1">
+            <li>
+                <details>
+                    <summary>🌎</summary>
+                    <ul class="bg-base-100 rounded-t-none p-2">
+                        <li><a href="?lang=pt_BR">🇧🇷</a></li>
+                        <li><a href="?lang=en_US">🏴󠁧󠁢󠁥󠁮󠁧󠁿</a></li>
+                    </ul>
+                </details>
+            </li>
+        </ul>
+    </div>
+    <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+            <div class="w-10 rounded-full">
+                <img
+                        alt="avatar do usuário"
+                        th:src="${user.attributes.avatar_url}" />
+            </div>
+        </div>
+        <ul
+                tabindex="0"
+                class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            <li>
+                <a class="justify-between" th:text="${user.attributes.login}"></a>
+            </li>
+            <li><a href="/logout">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<div th:if="${message}" role="alert" class="alert alert-success alert-soft m-4">
+    <span th:text="${message}"></span>
+</div>
+
+</body>
+</html>
