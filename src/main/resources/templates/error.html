@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyberpunk"> <head>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <title>AllGoal</title>
+</head>
+<body>
+
+<div class="card w-96 bg-base-200 card-md shadow-sm mx-auto mt-8">
+    <div class="card-body">
+        <h2 class="card-title" th:text="${error}"></h2>
+        <p th:text="${message}"></p>
+        <div class="justify-end card-actions">
+            <a href="javascript:history.back()" class="btn btn-primary" th:text="#{back}"></a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

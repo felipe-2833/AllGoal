@@ -23,4 +23,13 @@ public class UserService {
         var user = userRepository.findByEmail(login + "@github.com");
         return user.orElseGet(() -> userRepository.save(new User(principal, login + "@github.com")));
     }
+
+    public Long getXpRestanteParaProximoNivel(User usuario) {
+        long nivel = usuario.getNivel();
+        long xpTotal = usuario.getXpTotal();
+
+        long xpTeto = (long) (100 * (nivel * (nivel + 1) / 2.0));
+
+        return xpTeto - xpTotal;
+    }
 }

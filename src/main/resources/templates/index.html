@@ -21,15 +21,16 @@
             </div>
 
             <div class="flex-1">
-                <a href="/meta/dashboard" class="btn btn-ghost text-xl">AllGoal</a>
+                <a href="/meta/dashboard" class="btn btn-ghost text-xl">
+                    <img th:src="@{/images/logo.png}" alt="logo" class="w-50 h-50" />
+                </a>
             </div>
-
             <div class="flex-none">
                 <ul class="menu menu-horizontal px-1">
                     <li>
                         <details>
                             <summary>🌎</summary>
-                            <ul class="bg-base-100 rounded-t-none p-2">
+                            <ul class="bg-base-100 rounded-t-none p-2 z-50">
                                 <li><a href="?lang=pt_BR">🇧🇷</a></li>
                                 <li><a href="?lang=en_US">🏴󠁧󠁢󠁥󠁮󠁧󠁿</a></li>
                             </ul>
@@ -61,6 +62,7 @@
                     </div>
                     <div class="stat-title" th:text="#{level}"></div>
                     <div class="stat-value text-primary" th:text="${user.nivel}"></div>
+                    <div class="stat-desc text-wrap" th:text="${xpRestante} + #{niveldesc}"></div>
                 </div>
 
                 <div class="stat">
@@ -69,6 +71,7 @@
                     </div>
                     <div class="stat-title" th:text="#{xp}"></div>
                     <div class="stat-value text-secondary" th:text="${user.xpTotal}"></div>
+                    <div class="stat-desc text-wrap" th:text="#{xpdesc}"></div>
                 </div>
 
                 <div class="stat">
@@ -79,6 +82,7 @@
                     </div>
                     <div class="stat-title" th:text="#{coins}"></div>
                     <div class="stat-value text-accent" th:text="${user.moedas}"></div>
+                    <div class="stat-desc text-wrap" th:text="#{coinsdesc}"></div>
                 </div>
                 <div class="stat">
                     <div class="stat-figure text-info">
@@ -89,6 +93,7 @@
                     </div>
                     <div class="stat-title" th:text="#{completedgoals}"></div>
                     <div class="stat-value text-info" th:text="${metasConcluidas}"></div>
+                    <div class="stat-desc text-wrap" th:text="#{goalsdesc}"></div>
                 </div>
 
                 <div class="stat">
@@ -100,7 +105,77 @@
                     </div>
                     <div class="stat-title"th:text="#{ranking}"></div>
                     <div class="stat-value text-warning" th:text="${ranking} + 'º'"></div>
+                    <div class="stat-desc text-wrap" th:text="#{rankingdesc}"></div>
                 </div>
+            </div>
+
+            <div class="hero bg-base-200 mt-8 rounded-lg max-w-4xl">
+                <div class="hero-content flex-col lg:flex-row">
+                    <img
+                            th:src="@{/images/mascote.png}"
+                            class="max-w-xs sm:max-w-sm rounded-full shadow-2xl"
+                    />
+                    <div class="max-w-md">
+                        <h1 class="text-5xl font-bold" th:text="#{hi} + ' ' + ${user.nome}"></h1>
+                        <p class="py-6" th:text="#{dashboardtext}"></p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <div class="flex flex-col w-full my-8 px-8">
+
+            <h2 class="text-3xl font-bold text-base-content text-opacity-60" th:text="#{goals}"></h2>
+
+            <div class="divider"></div>
+        </div>
+
+        <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
+            <div th:each="meta : ${metas}">
+
+                <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
+                        th:onclick="'document.getElementById(\'modal_' + ${meta.idMeta} + '\').showModal()'">
+
+                    <div th:text="${meta.dataCriacao}" class="badge badge-accent m-4"></div>
+
+                    <div class="card-body items-center">
+                        <h2 th:text="${meta.titulo}" class="card-title"></h2>
+                        <div class="card-actions justify-end">
+                            <div class="badge badge-outline" th:text="${meta.xpRecompensa} + ' ' + #{xp}"></div>
+                            <div class="badge badge-outline" th:text="${meta.moedasRecompensa} + ' ' + #{coins}"></div>
+                        </div>
+                    </div>
+                </button>
+
+                <dialog th:id="'modal_' + ${meta.idMeta}" class="modal">
+                    <div class="modal-box w-11/12 max-w-2xl">
+
+                        <form th:action="@{/meta/submeter}" method="post">
+
+                            <h3 class="font-bold text-2xl" th:text="${meta.titulo}"></h3>
+                            <p class="py-4" th:text="${meta.descricao}">...</p>
+                            <div class="flex justify-start gap-2">
+                                <div class="badge badge-outline" th:text="${meta.xpRecompensa} + ' ' + #{xp}"></div>
+                                <div class="badge badge-outline" th:text="${meta.moedasRecompensa} + ' ' + #{coins}"></div>
+                            </div>
+
+                            <label class="form-control w-full mt-4">
+                                <div class="label"><span class="label-text" th:text="#{justfy}"></span></div>
+                                <textarea name="justificativa" class="textarea textarea-bordered font-normal h-24 w-full" th:placeholder="#{modalplaceholder}"></textarea>
+                            </label>
+
+                            <input type="hidden" name="metaId" th:value="${meta.idMeta}" />
+
+                            <div class="modal-action">
+                                <button type="submit" class="btn btn-primary" th:text="#{completegoal}"></button>
+                            </div>
+                        </form>
+
+                        <form method="dialog">
+                            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                        </form>
+                    </div>
+                </dialog>
             </div>
         </main>
 

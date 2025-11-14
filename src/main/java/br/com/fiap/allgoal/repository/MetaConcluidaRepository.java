@@ -3,9 +3,25 @@ package br.com.fiap.allgoal.repository;
 import br.com.fiap.allgoal.enums.Status;
 import br.com.fiap.allgoal.model.MetaConcluida;
 import br.com.fiap.allgoal.model.User;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.query.Procedure;
+import org.springframework.data.repository.query.Param;
 
 public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Long> {
 
     long countByUsuarioAndStatus(User usuario, Status status);
+
+    @Modifying
+    @Transactional
+    @Procedure(
+            procedureName = "pkg_gs_workflow.proc_insert_meta_concluida",
+            outputParameterName = "p_id_meta_concluida_out"
+    )
+    Long submeterMeta(
+            @Param("p_id_usuario") Long idUsuario,
+            @Param("p_id_meta") Long idMeta,
+            @Param("p_justificativa_texto") String justificativa
+    );
 }

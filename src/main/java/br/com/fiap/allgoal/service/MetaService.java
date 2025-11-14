@@ -2,6 +2,7 @@ package br.com.fiap.allgoal.service;
 
 import br.com.fiap.allgoal.config.MessageHelper;
 import br.com.fiap.allgoal.model.Meta;
+import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.MetaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,10 @@ public class MetaService {
 
     public void deleteById(Long id) {
         metaRepository.delete(getMeta(id));
+    }
+
+    public List<Meta> getMetasPendentes(User usuario) {
+        return metaRepository.findMetasPendentesPorUsuario(usuario.getIdUsuario());
     }
 
     public Meta getMeta(Long id) {

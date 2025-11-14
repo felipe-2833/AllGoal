@@ -31,6 +31,10 @@ public class MetaConcluidaService {
         metaConcluidaRepository.delete(getMetaConcluida(id));
     }
 
+    public void submeterMeta(Long idUsuario, Long idMeta, String justificativa) {
+        metaConcluidaRepository.submeterMeta(idUsuario, idMeta, justificativa);
+    }
+
     public MetaConcluida getMetaConcluida(Long id) {
         return metaConcluidaRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(messageHelper.get("metaConcluida.notfound"))
