@@ -2,6 +2,7 @@ package br.com.fiap.allgoal.service;
 
 import br.com.fiap.allgoal.config.MessageHelper;
 import br.com.fiap.allgoal.model.MetaConcluida;
+import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.MetaConcluidaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,10 @@ public class MetaConcluidaService {
 
     public void submeterMeta(Long idUsuario, Long idMeta, String justificativa) {
         metaConcluidaRepository.submeterMeta(idUsuario, idMeta, justificativa);
+    }
+
+    public List<MetaConcluida> getHistoricoPorUsuario(User usuario) {
+        return metaConcluidaRepository.findByUsuario(usuario);
     }
 
     public MetaConcluida getMetaConcluida(Long id) {

@@ -3,7 +3,6 @@ package br.com.fiap.allgoal.controller;
 import br.com.fiap.allgoal.enums.Status;
 import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.UserRepository;
-import br.com.fiap.allgoal.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,26 +11,20 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
 @Controller
+@RequestMapping("/loja")
 @RequiredArgsConstructor
-public class UserController {
+public class RecompensaController {
 
     private final UserRepository userRepository;
-    private final UserService userService;
 
-    @GetMapping("/ranking")
-    public String ranking(Model model, @AuthenticationPrincipal OAuth2User user) {
+    @GetMapping
+    public String loja(Model model, @AuthenticationPrincipal OAuth2User user) {
         String email = user.getAttribute("login") + "@github.com";
         User usuario = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-        long rankingUser = userRepository.getRanking(usuario.getXpTotal());
-        List<User> rankingList = userService.getTop5Ranking();
 
         model.addAttribute("user", usuario);
-        model.addAttribute("posicao", rankingUser);
-        model.addAttribute("rankingList", rankingList);
-        return "ranking";
+        return "loja";
     }
 }

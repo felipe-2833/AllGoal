@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Long> {
 
     long countByUsuarioAndStatus(User usuario, Status status);
@@ -24,4 +26,6 @@ public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Lo
             @Param("p_id_meta") Long idMeta,
             @Param("p_justificativa_texto") String justificativa
     );
+
+    List<MetaConcluida> findByUsuario(User usuario);
 }
