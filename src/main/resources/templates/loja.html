@@ -62,12 +62,26 @@
                 <div class="hero-content flex-col lg:flex-row">
                     <div class="max-w-md">
                         <h1 class="text-5xl font-bold" th:text="#{hi} + ' ' + ${user.nome}"></h1>
-                        <p class="py-6" th:text="#{rankingtext1} + ' ' + ${posicao} + #{rankingtext2}"></p>
+                        <p class="py-6" th:text="#{shoptext}"></p>
                     </div>
                     <img
-                            th:src="@{/images/mascote-vermelho.png}"
+                            th:src="@{/images/mascote-amarelo.png}"
                             class="max-w-xs sm:max-w-sm rounded-full shadow-2xl"
                     />
+                </div>
+            </div>
+        </main>
+
+        <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
+            <div th:each="recompensa : ${recompensas}">
+                <div th:text="${patio.endereco}" class="badge badge-accent m-4"></div>
+
+                <div class="card-body items-center">
+                    <h2 th:text="${patio.nome}" class="card-title"></h2>
+                    <div th:text="${patio.capacidade}"
+                         class="radial-progress bg-secondary text-secondary-content border-secondary border-4"
+                         th:style="${'--value:' + patio.capacidade}" th:aria-valuenow="${patio.capacidade}" role="progressbar">
+                    </div>
                 </div>
             </div>
         </main>

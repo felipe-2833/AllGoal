@@ -31,6 +31,10 @@ public class RecompensaService {
         recompensaRepository.delete(getRecompensa(id));
     }
 
+    public List<Recompensa> getRecompensasDisponiveis() {
+        return recompensaRepository.findByEstoqueGreaterThan(0);
+    }
+
     public Recompensa getRecompensa(Long id) {
         return recompensaRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(messageHelper.get("recompensa.notfound"))
