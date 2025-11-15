@@ -23,9 +23,7 @@ public class UserController {
 
     @GetMapping("/ranking")
     public String ranking(Model model, @AuthenticationPrincipal OAuth2User user) {
-        String email = user.getAttribute("login") + "@github.com";
-        User usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User usuario = getUsuarioLogado(user);
         long rankingUser = userRepository.getRanking(usuario.getXpTotal());
         List<User> rankingList = userService.getTop5Ranking();
 
@@ -33,5 +31,11 @@ public class UserController {
         model.addAttribute("posicao", rankingUser);
         model.addAttribute("rankingList", rankingList);
         return "ranking";
+    }
+
+    private User getUsuarioLogado(OAuth2User principal) {
+        String email = principal.getAttribute("login") + "@github.com";
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }

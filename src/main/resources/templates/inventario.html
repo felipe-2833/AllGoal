@@ -85,21 +85,27 @@
                 </div>
                 <div class="card-actions justify-end p-4">
                     <div th:if="${compra.statusCompra.name() == 'COMPRADO'}" class="flex gap-2 w-full">
-                        <form th:action="@{/loja/solicitar}" method="POST" class="w-full">
-                            <input type="hidden" name="compraId" th:value="${compra.idCompra}" />
 
-                            <button th:if="${compra.statusCompra.name() == 'COMPRADO'}"
-                                    type="submit" class="btn btn-accent w-full" th:text="#{solicitar}"></button>
+                        <form th:action="@{/loja/inventario/reembolsar}" method="POST" class="flex-1">
+                            <input type="hidden" name="compraId" th:value="${compra.idCompra}"/>
+                            <button type="submit" class="btn btn-outline btn-error w-full" th:text="#{refund}"></button>
+                        </form>
+
+                        <form th:action="@{/loja/inventario/solicitar}" method="POST" class="flex-1">
+                            <input type="hidden" name="compraId" th:value="${compra.idCompra}" />
+                            <button type="submit" class="btn btn-primary w-full" th:text="#{request}"></button>
                         </form>
                     </div>
 
                     <button th:if="${compra.statusCompra.name() == 'SOLICITADO'}"
-                            type="button" class="btn btn-disabled w-full"
-                            th:text="#{solicitado}"></button>
+                            type="button" class="btn btn-warning w-full" disabled
+                            th:text="#{pend}">
+                    </button>
 
                     <button th:if="${compra.statusCompra.name() == 'CONCLUIDO'}"
-                            type="button" class="btn btn-disabled w-full"
-                            th:text="#{concluido}"></button>
+                            type="button" class="btn btn-success w-full" disabled
+                            th:text="#{redeemed}">
+                    </button>
 
                 </div>
             </div>

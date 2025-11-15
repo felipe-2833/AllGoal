@@ -36,9 +36,7 @@ public class MetaController {
 
     @GetMapping("/dashboard")
     public String index(Model model, @AuthenticationPrincipal OAuth2User user) {
-        String email = user.getAttribute("login") + "@github.com";
-        User usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User usuario = getUsuarioLogado(user);
         long metasConcluidas = metaConcluidaRepository.countByUsuarioAndStatus(usuario, Status.APROVADA);
         long ranking = userRepository.getRanking(usuario.getXpTotal());
         var metas = metaService.getMetasPendentes(usuario);
@@ -60,9 +58,7 @@ public class MetaController {
             RedirectAttributes redirect) {
 
         try {
-            String email = user.getAttribute("login") + "@github.com";
-            User usuario = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            User usuario = getUsuarioLogado(user);
 
             metaConcluidaService.submeterMeta(usuario.getIdUsuario(), metaId, justificativa);
             redirect.addFlashAttribute("message", messageHelper.get("metaconcluida.cromplete.success"));
@@ -81,9 +77,7 @@ public class MetaController {
 
     @GetMapping
     public String meta(Model model, @AuthenticationPrincipal OAuth2User user) {
-        String email = user.getAttribute("login") + "@github.com";
-        User usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User usuario = getUsuarioLogado(user);
         var metas = metaService.getMetasPendentes(usuario);
         List<MetaConcluida> metasHistorico = metaConcluidaService.getHistoricoPorUsuario(usuario);
 
@@ -101,9 +95,7 @@ public class MetaController {
             RedirectAttributes redirect) {
 
         try {
-            String email = user.getAttribute("login") + "@github.com";
-            User usuario = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+            User usuario = getUsuarioLogado(user);
 
             metaConcluidaService.submeterMeta(usuario.getIdUsuario(), metaId, justificativa);
             redirect.addFlashAttribute("message", messageHelper.get("metaconcluida.cromplete.success"));
@@ -118,5 +110,11 @@ public class MetaController {
             redirect.addFlashAttribute("error", "Erro: " + errorMessage);
         }
         return "redirect:/meta";
+    }
+
+    private User getUsuarioLogado(OAuth2User principal) {
+        String email = principal.getAttribute("login") + "@github.com";
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }

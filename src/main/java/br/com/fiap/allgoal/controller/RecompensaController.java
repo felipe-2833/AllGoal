@@ -38,9 +38,7 @@ public class RecompensaController {
 
     @GetMapping
     public String loja(Model model, @AuthenticationPrincipal OAuth2User user) {
-        String email = user.getAttribute("login") + "@github.com";
-        User usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User usuario = getUsuarioLogado(user);
         List<Recompensa> recompensas = recompensaService.getRecompensasDisponiveis();
 
         model.addAttribute("recompensas", recompensas);
@@ -55,10 +53,7 @@ public class RecompensaController {
             RedirectAttributes redirect) {
 
         try {
-            String email = principal.getAttribute("login") + "@github.com";
-            User usuario = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
-
+            User usuario = getUsuarioLogado(principal);
             recompensaService.comprarRecompensa(usuario.getIdUsuario(), recompensaId);
             redirect.addFlashAttribute("message", messageHelper.get("compra.sucesso"));
 
@@ -74,9 +69,7 @@ public class RecompensaController {
 
     @GetMapping("/inventario")
     public String inventario(Model model, @AuthenticationPrincipal OAuth2User user) {
-        String email = user.getAttribute("login") + "@github.com";
-        User usuario = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+        User usuario = getUsuarioLogado(user);
         List<CompraLoja> compras = compraLojaService.getItensPorUsuario(usuario);
 
         model.addAttribute("compras", compras);
@@ -88,7 +81,6 @@ public class RecompensaController {
     @PostMapping("/solicitar")
     public String SolicitarRecompensa(
             @RequestParam("compraId") Long compraId,
-            @AuthenticationPrincipal OAuth2User principal,
             RedirectAttributes redirect) {
             CompraLoja compra = compraLojaService.getCompraLoja(compraId);
 
@@ -98,5 +90,39 @@ public class RecompensaController {
             redirect.addFlashAttribute("message", messageHelper.get("solicitado.sucesso"));
 
         return "redirect:/loja/inventario";
+    }
+
+    @PostMapping("/inventario/solicitar")
+    public String solicitarResgate(@RequestParam("compraId") Long compraId,
+                                   @AuthenticationPrincipal OAuth2User user,
+                                   RedirectAttributes redirect) {
+        try {
+            User usuario = getUsuarioLogado(user);
+            compraLojaService.solicitarResgate(compraId, usuario.getIdUsuario());
+            redirect.addFlashAttribute("message", messageHelper.get("inventario.solicitado.sucesso"));
+        } catch (CompraException e) {
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + ": " + e.getMessage());
+        }
+        return "redirect:/loja/inventario";
+    }
+
+    @PostMapping("/inventario/reembolsar")
+    public String reembolsarCompra(@RequestParam("compraId") Long compraId,
+                                   @AuthenticationPrincipal OAuth2User user,
+                                   RedirectAttributes redirect) {
+        try {
+            User usuario = getUsuarioLogado(user);
+            compraLojaService.reembolsarCompra(compraId, usuario.getIdUsuario());
+            redirect.addFlashAttribute("message", messageHelper.get("inventario.reembolso.sucesso"));
+        } catch (CompraException e) {
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + ": " + e.getMessage());
+        }
+        return "redirect:/loja/inventario";
+    }
+
+    private User getUsuarioLogado(OAuth2User principal) {
+        String email = principal.getAttribute("login") + "@github.com";
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
 }
