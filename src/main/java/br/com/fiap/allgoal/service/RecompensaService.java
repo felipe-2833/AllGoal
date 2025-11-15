@@ -1,9 +1,11 @@
 package br.com.fiap.allgoal.service;
 
 import br.com.fiap.allgoal.config.MessageHelper;
+import br.com.fiap.allgoal.exception.CompraException;
 import br.com.fiap.allgoal.model.Recompensa;
 import br.com.fiap.allgoal.repository.RecompensaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.exception.GenericJDBCException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +35,23 @@ public class RecompensaService {
 
     public List<Recompensa> getRecompensasDisponiveis() {
         return recompensaRepository.findByEstoqueGreaterThan(0);
+    }
+
+    public void comprarRecompensa(Long idUsuario, Long idRecompensa) {
+        try {
+            recompensaRepository.comprarRecompensa(idUsuario, idRecompensa);
+
+        } catch (Exception e) {
+            String errorMessage = "Erro desconhecido ao processar a compra.";
+            if (e.getCause() instanceof GenericJDBCException) {
+                try {
+                    errorMessage = ((GenericJDBCException) e.getCause())
+                            .getSQLException().getMessage();
+                    errorMessage = errorMessage.replaceAll("ORA-\\d+: ", "").trim();
+                } catch (Exception ignored) { }
+            }
+            throw new CompraException(errorMessage);
+        }
     }
 
     public Recompensa getRecompensa(Long id) {

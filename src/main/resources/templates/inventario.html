@@ -62,10 +62,10 @@
                 <div class="hero-content flex-col lg:flex-row">
                     <div class="max-w-md">
                         <h1 class="text-5xl font-bold" th:text="#{hi} + ' ' + ${user.nome}"></h1>
-                        <p class="py-6" th:text="#{shoptext}"></p>
+                        <p class="py-6" th:text="#{storagetext}"></p>
                     </div>
                     <img
-                            th:src="@{/images/mascote-amarelo.png}"
+                            th:src="@{/images/mascote-verde.png}"
                             class="max-w-xs sm:max-w-sm rounded-full shadow-2xl"
                     />
                 </div>
@@ -73,27 +73,34 @@
         </main>
 
         <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-            <div th:each="recompensa : ${recompensas}" class="card card-border bg-base-300 w-96">
-                <div class="badge badge-accent m-4"><span th:text="${recompensa.custoMoedas}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg></div>
+            <div th:each="compra : ${compras}" class="card card-border bg-base-300 w-96">
+                <div class="badge badge-accent m-4" th:text="${compra.dataCompra}"></div>
 
                 <div class="card-body items-center">
-                    <h2 th:text="${recompensa.nomeItem}" class="card-title"></h2>
-                    <p class="py-4" th:text="${recompensa.descricao}"></p>
+                    <h2 th:text="${compra.recompensa.nomeItem}" class="card-title"></h2>
+                    <p class="py-4" th:text="${compra.recompensa.descricao}"></p>
                     <div class="card-actions justify-end">
-                        <div class="badge badge-outline" th:text="${recompensa.estoque} + ' ' + #{storage2}"></div>
+                        <div class="badge badge-outline"><span th:text="${compra.custoPago}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg></div>
                     </div>
                 </div>
                 <div class="card-actions justify-end p-4">
-                    <form th:action="@{/loja/comprar}" method="POST" class="w-full">
-                        <input type="hidden" name="recompensaId" th:value="${recompensa.idRecompensa}" />
+                    <div th:if="${compra.statusCompra.name() == 'COMPRADO'}" class="flex gap-2 w-full">
+                        <form th:action="@{/loja/solicitar}" method="POST" class="w-full">
+                            <input type="hidden" name="compraId" th:value="${compra.idCompra}" />
 
-                        <button th:if="${user.moedas >= recompensa.custoMoedas}"
-                                type="submit" class="btn btn-accent w-full" th:text="#{buy}"></button>
+                            <button th:if="${compra.statusCompra.name() == 'COMPRADO'}"
+                                    type="submit" class="btn btn-accent w-full" th:text="#{solicitar}"></button>
+                        </form>
+                    </div>
 
-                        <button th:if="${user.moedas < recompensa.custoMoedas}"
-                                type="button" class="btn btn-disabled w-full"
-                                th:text="#{erro.moedasInsuficientes}"></button>
-                    </form>
+                    <button th:if="${compra.statusCompra.name() == 'SOLICITADO'}"
+                            type="button" class="btn btn-disabled w-full"
+                            th:text="#{solicitado}"></button>
+
+                    <button th:if="${compra.statusCompra.name() == 'CONCLUIDO'}"
+                            type="button" class="btn btn-disabled w-full"
+                            th:text="#{concluido}"></button>
+
                 </div>
             </div>
         </main>

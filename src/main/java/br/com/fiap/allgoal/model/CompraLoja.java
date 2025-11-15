@@ -1,6 +1,9 @@
 package br.com.fiap.allgoal.model;
 
+import br.com.fiap.allgoal.enums.StatusCompra;
+import br.com.fiap.allgoal.enums.StatusMeta;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -41,4 +44,9 @@ public class CompraLoja {
     @Column(name = "custo_pago", nullable = false)
     @Positive(message = "{compra.custo.positive}")
     private Long custoPago;
+
+    @Column(name = "status", nullable = false, length = 20)
+    @NotNull(message = "{compra.status.notnull}")
+    @Enumerated(EnumType.STRING)
+    private StatusCompra statusCompra;
 }

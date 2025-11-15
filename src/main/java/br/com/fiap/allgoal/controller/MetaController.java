@@ -86,10 +86,37 @@ public class MetaController {
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
         var metas = metaService.getMetasPendentes(usuario);
         List<MetaConcluida> metasHistorico = metaConcluidaService.getHistoricoPorUsuario(usuario);
-        model.addAttribute("metasHistorico", metasHistorico);
 
+        model.addAttribute("metasHistorico", metasHistorico);
         model.addAttribute("user", usuario);
         model.addAttribute("metas", metas);
         return "meta";
+    }
+
+    @PostMapping("/submeter2")
+    public String submeterMeta2(
+            @RequestParam("metaId") Long metaId,
+            @RequestParam("justificativa") String justificativa,
+            @AuthenticationPrincipal OAuth2User user,
+            RedirectAttributes redirect) {
+
+        try {
+            String email = user.getAttribute("login") + "@github.com";
+            User usuario = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+            metaConcluidaService.submeterMeta(usuario.getIdUsuario(), metaId, justificativa);
+            redirect.addFlashAttribute("message", messageHelper.get("metaconcluida.cromplete.success"));
+
+        } catch (Exception e) {
+            String errorMessage = e.getMessage();
+            if (e.getCause() instanceof org.hibernate.exception.GenericJDBCException) {
+                errorMessage = ((org.hibernate.exception.GenericJDBCException) e.getCause())
+                        .getSQLException().getMessage();
+            }
+            errorMessage = errorMessage.replaceAll("ORA-\\d+: ", "");
+            redirect.addFlashAttribute("error", "Erro: " + errorMessage);
+        }
+        return "redirect:/meta";
     }
 }
