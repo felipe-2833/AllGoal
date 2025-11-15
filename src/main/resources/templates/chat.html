@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyberpunk"> <head>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <meta charset="UTF-8">
+    <title>AllGoal</title>
+</head>
+<body>
+
+<div class="drawer lg:drawer-open">
+    <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
+
+    <div class="drawer-content flex flex-col">
+
+        <nav class="navbar bg-base-300 shadow-sm">
+            <div class="flex-none lg:hidden">
+                <label for="my-drawer-3" aria-label="open sidebar" class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-6 w-6 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </label>
+            </div>
+
+            <div class="flex-1">
+                <a href="/meta/dashboard" class="btn btn-ghost text-xl">
+                    <img th:src="@{/images/logo.png}" alt="logo" class="w-50 h-50" />
+                </a>
+            </div>
+            <div class="flex-none">
+                <div class="badge badge-soft badge-primary"><span th:text="${user.nivel}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg></div>
+                <div class="badge badge-soft badge-secondary"><span th:text="${user.xpTotal}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg></div>
+                <div class="badge badge-soft badge-accent"><span th:text="${user.moedas}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg></div>
+                <ul class="menu menu-horizontal px-1">
+                    <li>
+                        <details>
+                            <summary>🌎</summary>
+                            <ul class="bg-base-100 rounded-t-none p-2 z-50">
+                                <li><a href="?lang=pt_BR">🇧🇷</a></li>
+                                <li><a href="?lang=en_US">🏴󠁧󠁢󠁥󠁮󠁧󠁿</a></li>
+                            </ul>
+                        </details>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown dropdown-end">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                    <div class="w-10 rounded-full">
+                        <img alt="avatar do usuário" th:src="${user.avatarUrl}" />
+                    </div>
+                </div>
+                <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+                    <li><a class="justify-between" th:text="${user.nome}"></a></li>
+                    <input type="checkbox" value="night" class="toggle theme-controller" />
+                    <li><a href="/logout">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div th:if="${message}" role="alert" class="alert alert-success alert-soft m-4">
+            <span th:text="${message}"></span>
+        </div>
+
+        <main class="p-4 flex flex-col items-center flex-1 overflow-hidden">
+
+            <h1 class="text-3xl font-bold self-start px-4" th:text="#{chatall}"></h1>
+            <div class="divider"></div>
+
+            <div class="flex flex-col w-full max-w-4xl h-full bg-base-200 rounded-lg shadow-lg">
+
+                <div id="message-list" class="flex-1 p-4 space-y-4 overflow-y-auto">
+                    <div class="chat chat-start">
+                        <div class="chat-bubble chat-bubble-primary" th:text="#{chatext}"></div>
+                    </div>
+                </div>
+
+                <div class="p-4 bg-base-300">
+                    <form id="chat-form" class="flex gap-2">
+                        <input id="message-input" type="text" placeholder="Escreve a tua mensagem..." class="input input-bordered w-full" />
+                        <button type="submit" class="btn btn-primary" th:text="#{submit}"></button>
+                    </form>
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+    <div class="drawer-side">
+        <label for="my-drawer-3" aria-label="close sidebar" class="drawer-overlay"></label>
+
+        <ul class="menu bg-base-200 min-h-full w-64 p-4">
+
+            <li>
+                <a href="/meta/dashboard">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                    </svg>
+                    <span th:text="#{dashboard}"></span>
+                </a>
+            </li>
+
+            <li>
+                <a href="/meta">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
+                    </svg>
+                    <span th:text="#{goals}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/loja">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                    </svg>
+                    <span th:text="#{shop}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/ranking">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 0 1 3 19.875v-6.75ZM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V8.625ZM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 0 1-1.125-1.125V4.125Z" />
+                    </svg>
+                    <span th:text="#{ranking}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/loja/inventario">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                    </svg>
+                    <span th:text="#{storage}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                    </svg>
+                    <span th:text="#{chatall}"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    const chatForm = document.getElementById('chat-form');
+    const messageInput = document.getElementById('message-input');
+    const messageList = document.getElementById('message-list');
+    const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)[1];
+
+    chatForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const message = messageInput.value;
+        if (!message) return;
+
+        addMessage(message, 'chat-end');
+        messageInput.value = '';
+
+        addMessage('<span class="loading loading-dots loading-md"></span>', 'chat-start', 'typing-indicator');
+
+        try {
+            // 3. Envia a mensagem para o Backend (API)
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-XSRF-TOKEN': csrfToken // Envia o token de segurança
+                },
+                body: JSON.stringify({ message: message })
+            });
+
+            if (!response.ok) {
+                throw new Error('Falha na resposta da rede');
+            }
+
+            const data = await response.json();
+
+            // 4. Remove o "a digitar..."
+            removeTypingIndicator();
+
+            // 5. Adiciona a resposta da IA
+            addMessage(data.response, 'chat-start');
+
+        } catch (error) {
+            console.error('Erro:', error);
+            removeTypingIndicator();
+            addMessage('Desculpa, ocorreu um erro. Tenta novamente.', 'chat-start');
+        }
+    });
+
+    function addMessage(content, chatClass, id = null) {
+        const chatElement = document.createElement('div');
+        chatElement.classList.add('chat', chatClass);
+        if (id) chatElement.id = id;
+
+        const bubble = document.createElement('div');
+        bubble.classList.add('chat-bubble');
+        if (chatClass === 'chat-start') {
+            bubble.classList.add('chat-bubble-primary');
+        }
+        bubble.innerHTML = content;
+
+        chatElement.appendChild(bubble);
+        messageList.appendChild(chatElement);
+
+        messageList.scrollTop = messageList.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+</script>
+
+</body>
+</html>
