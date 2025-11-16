@@ -3,6 +3,7 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <meta charset="UTF-8">
     <title>AllGoal</title>
 </head>
@@ -61,8 +62,11 @@
 
         <main class="p-4 flex flex-col items-center flex-1 overflow-hidden">
 
-            <h1 class="text-3xl font-bold self-start px-4" th:text="#{chatall}"></h1>
-            <div class="divider"></div>
+            <div class="flex items-center w-full max-w-4xl mb-2 gap-4">
+                <img th:src="@{/images/mascote-rosa.png}" class="w24 h-24 rounded-full shadow-2xl"/>
+
+                <h1 class="text-3xl font-bold" th:text="#{chatall}"></h1>
+            </div>
 
             <div class="flex flex-col w-full max-w-4xl h-full bg-base-200 rounded-lg shadow-lg">
 
@@ -74,7 +78,7 @@
 
                 <div class="p-4 bg-base-300">
                     <form id="chat-form" class="flex gap-2">
-                        <input id="message-input" type="text" placeholder="Escreve a tua mensagem..." class="input input-bordered w-full" />
+                        <input id="message-input" type="text" th:placeholder="#{chatplaceholder}" class="input input-bordered w-full" />
                         <button type="submit" class="btn btn-primary" th:text="#{submit}"></button>
                     </form>
                 </div>
@@ -140,11 +144,13 @@
         </ul>
     </div>
 </div>
-<script>
+<script th:inline="javascript">
+    const csrfToken = /*[[${_csrf.token}]]*/ null;
+    const csrfHeader = /*[[${_csrf.headerName}]]*/ null;
+
     const chatForm = document.getElementById('chat-form');
     const messageInput = document.getElementById('message-input');
     const messageList = document.getElementById('message-list');
-    const csrfToken = document.cookie.match(/XSRF-TOKEN=([^;]+)/)[1];
 
     chatForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -158,32 +164,29 @@
         addMessage('<span class="loading loading-dots loading-md"></span>', 'chat-start', 'typing-indicator');
 
         try {
-            // 3. Envia a mensagem para o Backend (API)
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-XSRF-TOKEN': csrfToken // Envia o token de segurança
+                    [csrfHeader]: csrfToken
                 },
                 body: JSON.stringify({ message: message })
             });
 
             if (!response.ok) {
-                throw new Error('Falha na resposta da rede');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Falha na resposta da rede');
             }
 
             const data = await response.json();
 
-            // 4. Remove o "a digitar..."
             removeTypingIndicator();
-
-            // 5. Adiciona a resposta da IA
             addMessage(data.response, 'chat-start');
 
         } catch (error) {
             console.error('Erro:', error);
             removeTypingIndicator();
-            addMessage('Desculpa, ocorreu um erro. Tenta novamente.', 'chat-start');
+            addMessage('Desculpa, ocorreu um erro: ' + error.message, 'chat-start');
         }
     });
 
@@ -194,14 +197,16 @@
 
         const bubble = document.createElement('div');
         bubble.classList.add('chat-bubble');
+
         if (chatClass === 'chat-start') {
             bubble.classList.add('chat-bubble-primary');
+            bubble.innerHTML = marked.parse(content);
+        } else {
+            bubble.textContent = content;
         }
-        bubble.innerHTML = content;
 
         chatElement.appendChild(bubble);
         messageList.appendChild(chatElement);
-
         messageList.scrollTop = messageList.scrollHeight;
     }
 
