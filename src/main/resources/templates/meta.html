@@ -140,9 +140,10 @@
                             <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
                                     th:onclick="'document.getElementById(\'modal_' + ${hist.idMetaConcluida} + '\').showModal()'">
 
-                                <span th:if="${hist.status.name() == 'APROVADA' || hist.status.name() == 'REJEITADA'}">
+                                <span th:if="${hist.status.name() == 'APROVADA' || hist.status.name() == 'REJEITADA' || hist.status.name() == 'CONCLUIDA_E_COLETADA'}">
                                     <div th:text="${hist.dataAprovacao}" class="badge badge-accent m-4"></div>
                                 </span>
+
                                 <span th:if="${hist.status.name() == 'PENDENTE_APROVACAO'}">
                                     <div th:text="${hist.dataSubmissao}" class="badge badge-accent m-4"></div>
                                 </span>
@@ -156,9 +157,10 @@
                                 </div>
 
                                 <div class="card-actions justify-end">
-                                    <span th:if="${hist.status.name() == 'APROVADA'}" class="badge badge-success" th:text="#{aproved}"></span>
-                                    <span th:if="${hist.status.name() == 'REJEITADA'}" class="badge badge-error" th:text="#{rejected}"></span>
-                                    <span th:if="${hist.status.name() == 'PENDENTE_APROVACAO'}" class="badge badge-warning" th:text="#{pending}"></span>
+                                    <span th:if="${hist.status.name() == 'APROVADA'}" class="badge badge-success" th:text="${hist.status}"></span>
+                                    <span th:if="${hist.status.name() == 'CONCLUIDA_E_COLETADA'}" class="badge badge-secondary" th:text="${hist.status}"></span>
+                                    <span th:if="${hist.status.name() == 'REJEITADA'}" class="badge badge-error" th:text="${hist.status}"></span>
+                                    <span th:if="${hist.status.name() == 'PENDENTE_APROVACAO'}" class="badge badge-warning" th:text="${hist.status}"></span>
                                 </div>
                             </button>
 
@@ -172,9 +174,21 @@
                                         <div class="badge badge-outline" th:text="${hist.meta.moedasRecompensa} + ' ' + #{coins}"></div>
                                     </div>
                                     <div class="card-actions justify-end">
-                                        <span th:if="${hist.status.name() == 'APROVADA'}" class="badge badge-success" th:text="#{aproved}"></span>
-                                        <span th:if="${hist.status.name() == 'REJEITADA'}" class="badge badge-error" th:text="#{rejected}"></span>
-                                        <span th:if="${hist.status.name() == 'PENDENTE_APROVACAO'}" class="badge badge-warning" th:text="#{pending}"></span>
+                                        <span th:if="${hist.status.name() == 'APROVADA' || hist.status.name() == 'CONCLUIDA_E_COLETADA'}" class="badge badge-success" th:text="${hist.status}"></span>
+                                        <span th:if="${hist.status.name() == 'REJEITADA'}" class="badge badge-error" th:text="${hist.status}"></span>
+                                        <span th:if="${hist.status.name() == 'PENDENTE_APROVACAO'}" class="badge badge-warning" th:text="${hist.status}"></span>
+                                    </div>
+
+                                    <div class="modal-action">
+                                        <form th:if="${hist.status.name() == 'REJEITADA'}" th:action="@{/meta/refazer}" method="post">
+                                            <input type="hidden" name="metaConcluidaId" th:value="${hist.idMetaConcluida}" />
+                                            <button type="submit" class="btn btn-outline btn-error" th:text="#{remake}"></button>
+                                        </form>
+                                        <form th:if="${hist.status.name() == 'APROVADA'}" th:action="@{/meta/coletar}" method="post">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <input type="hidden" name="metaConcluidaId" th:value="${hist.idMetaConcluida}" />
+                                            <button type="submit" class="btn btn-primary" th:text="#{collect}"></button>
+                                        </form>
                                     </div>
 
                                     <form method="dialog">
@@ -240,6 +254,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                     </svg>
                     <span th:text="#{chatall}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/meta/adm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                    </svg>
+                    <span th:text="#{admetas}"></span>
                 </a>
             </li>
         </ul>

@@ -15,6 +15,8 @@ public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Lo
 
     long countByUsuarioAndStatus(User usuario, Status status);
 
+    List<MetaConcluida> findAllByStatus(Status status);
+
     @Modifying
     @Transactional
     @Procedure(
@@ -25,6 +27,14 @@ public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Lo
             @Param("p_id_usuario") Long idUsuario,
             @Param("p_id_meta") Long idMeta,
             @Param("p_justificativa_texto") String justificativa
+    );
+
+    @Modifying
+    @Transactional
+    @Procedure(procedureName = "pkg_gs_workflow.proc_coletar_recompensa_meta")
+    void coletarRecompensaMeta(
+            @Param("p_id_meta_concluida") Long idMetaConcluida,
+            @Param("p_id_usuario_sessao") Long idUsuarioSessao
     );
 
     List<MetaConcluida> findByUsuario(User usuario);

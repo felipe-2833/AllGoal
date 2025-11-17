@@ -16,7 +16,7 @@ public interface MetaRepository extends JpaRepository<Meta, Long> {
                     "    SELECT 1 FROM gs_meta_concluida mc " +
                     "    WHERE mc.id_meta = m.id_meta " +
                     "    AND mc.id_usuario = :idUsuario " +
-                    "    AND mc.status IN ('APROVADA', 'PENDENTE_APROVACAO')" +
+                    "    AND mc.status IN ('APROVADA', 'PENDENTE_APROVACAO', 'REJEITADA', 'CONCLUIDA_E_COLETADA')" +
                     ")",
             nativeQuery = true)
     List<Meta> findMetasPendentesPorUsuario(@Param("idUsuario") Long idUsuario);

@@ -1,5 +1,6 @@
 package br.com.fiap.allgoal.service;
 
+import br.com.fiap.allgoal.config.MessageHelper;
 import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.UserRepository;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -12,7 +13,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, MessageHelper messageHelper) {
         this.userRepository = userRepository;
     }
 

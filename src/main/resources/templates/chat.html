@@ -12,7 +12,7 @@
 <div class="drawer lg:drawer-open">
     <input id="my-drawer-3" type="checkbox" class="drawer-toggle" />
 
-    <div class="drawer-content flex flex-col">
+    <div class="drawer-content flex flex-col h-screen">
 
         <nav class="navbar bg-base-300 shadow-sm">
             <div class="flex-none lg:hidden">
@@ -63,12 +63,11 @@
         <main class="p-4 flex flex-col items-center flex-1 overflow-hidden">
 
             <div class="flex items-center w-full max-w-4xl mb-2 gap-4">
-                <img th:src="@{/images/mascote-rosa.png}" class="w24 h-24 rounded-full shadow-2xl"/>
-
+                <img th:src="@{/images/mascote-rosa.png}" class="w-24 h-24 rounded-full shadow-2xl"/>
                 <h1 class="text-3xl font-bold" th:text="#{chatall}"></h1>
             </div>
 
-            <div class="flex flex-col w-full max-w-4xl h-full bg-base-200 rounded-lg shadow-lg">
+            <div class="flex flex-col w-full max-w-4xl flex-1 bg-base-200 rounded-lg shadow-lg overflow-hidden">
 
                 <div id="message-list" class="flex-1 p-4 space-y-4 overflow-y-auto">
                     <div class="chat chat-start">
@@ -83,7 +82,6 @@
                     </form>
                 </div>
             </div>
-
         </main>
 
     </div>
@@ -139,6 +137,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                     </svg>
                     <span th:text="#{chatall}"></span>
+                </a>
+            </li>
+            <li>
+                <a href="/meta/adm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
+                    </svg>
+                    <span th:text="#{admetas}"></span>
                 </a>
             </li>
         </ul>
