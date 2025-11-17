@@ -125,4 +125,16 @@ public class RecompensaController {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
     }
+
+    @GetMapping("/adm")
+    public String lojaAdm(Model model, @AuthenticationPrincipal OAuth2User user) {
+        User usuario = getUsuarioLogado(user);
+        List<Recompensa> recompensas = recompensaService.getAllRecompensas();
+        List<CompraLoja> comprasSolicitadas = compraLojaService.getAllComprasSolicitadas();
+
+        model.addAttribute("compras", comprasSolicitadas);
+        model.addAttribute("recompensas", recompensas);
+        model.addAttribute("user", usuario);
+        return "adm-recompensas";
+    }
 }

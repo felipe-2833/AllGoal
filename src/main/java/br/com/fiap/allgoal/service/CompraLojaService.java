@@ -1,6 +1,8 @@
 package br.com.fiap.allgoal.service;
 
 import br.com.fiap.allgoal.config.MessageHelper;
+import br.com.fiap.allgoal.enums.Status;
+import br.com.fiap.allgoal.enums.StatusCompra;
 import br.com.fiap.allgoal.exception.CompraException;
 import br.com.fiap.allgoal.model.CompraLoja;
 import br.com.fiap.allgoal.model.MetaConcluida;
@@ -37,6 +39,10 @@ public class CompraLojaService {
 
     public List<CompraLoja> getItensPorUsuario(User usuario) {
         return compraLojaRepository.findByUsuario(usuario);
+    }
+
+    public List<CompraLoja> getAllComprasSolicitadas(){
+        return compraLojaRepository.findAllByStatusCompra(StatusCompra.SOLICITADO);
     }
 
     public void solicitarResgate(Long idCompra, Long idUsuario) {

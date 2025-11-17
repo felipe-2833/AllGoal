@@ -1,5 +1,6 @@
 package br.com.fiap.allgoal.repository;
 
+import br.com.fiap.allgoal.enums.StatusCompra;
 import br.com.fiap.allgoal.model.CompraLoja;
 import br.com.fiap.allgoal.model.User;
 import jakarta.transaction.Transactional;
@@ -13,6 +14,8 @@ import java.util.List;
 public interface CompraLojaRepository extends JpaRepository<CompraLoja, Long> {
 
     List<CompraLoja> findByUsuario(User usuario);
+
+    List<CompraLoja> findAllByStatusCompra(StatusCompra status);
 
     @Modifying
     @Transactional
