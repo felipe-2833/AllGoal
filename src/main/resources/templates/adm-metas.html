@@ -57,6 +57,9 @@
         <div th:if="${message}" role="alert" class="alert alert-success alert-soft m-4">
             <span th:text="${message}"></span>
         </div>
+        <div th:if="${error}" role="alert" class="alert alert-error shadow-lg m-4">
+            <span th:text="${error}"></span>
+        </div>
         <main class="p-4 flex flex-col items-center">
             <div class="hero bg-base-200 mt-8 rounded-lg max-w-4xl">
                 <div class="hero-content flex-col lg:flex-row">
@@ -74,7 +77,9 @@
 
         <main class="p-4 flex flex-col items-center">
 
-            <h1 class="text-3xl font-bold self-start px-4" th:text="#{createdgoals}"></h1>
+            <div class="flex justify-between items-left w-full px-4">
+                <button class="btn btn-primary" onclick="modal_create_meta.showModal()" th:text="#{meta.create}"></button>
+            </div>
 
             <div role="tablist" class="tabs tabs-lifted tabs-lg w-full mt-4">
 
@@ -97,6 +102,89 @@
                                     </div>
                                 </div>
                             </button>
+
+                            <dialog th:id="'modal_' + ${meta.idMeta}" class="modal">
+                                <div class="modal-box w-11/12 max-w-2xl">
+                                    <h3 class="font-bold text-2xl" th:text="${meta.titulo}"></h3>
+                                    <p class="py-4" th:text="${meta.descricao}">...</p>
+                                    <div class="flex justify-start gap-2">
+                                        <div class="badge badge-outline" th:text="${meta.xpRecompensa} + ' ' + #{xp}"></div>
+                                        <div class="badge badge-outline" th:text="${meta.moedasRecompensa} + ' ' + #{coins}"></div>
+                                    </div>
+
+                                    <input type="hidden" name="metaId" th:value="${meta.idMeta}" />
+
+                                    <div class="modal-action">
+
+                                        <form method="dialog">
+                                            <button class="btn" th:text="#{close}"></button>
+                                        </form>
+
+                                        <button class="btn btn-primary"
+                                                th:text="#{meta.update}"
+                                                th:onclick="'modal_update_' + ${meta.idMeta} + '.showModal()'">
+                                        </button>
+
+                                        <form th:action="@{/meta/delete}" method="post">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <input type="hidden" name="metaId" th:value="${meta.idMeta}" />
+                                            <button type="submit" class="btn btn-outline btn-error" th:text="#{deletegoal}"></button>
+                                        </form>
+                                    </div>
+
+                                    <form method="dialog">
+                                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                    </form>
+                                </div>
+                            </dialog>
+                            <dialog th:id="'modal_update_' + ${meta.idMeta}" class="modal">
+                                <div class="modal-box w-11/12 max-w-2xl">
+                                    <h3 class="font-bold text-lg" th:text="#{meta.update}"></h3>
+
+                                    <form th:action="@{/meta/adm/atualizar}" method="post" class="space-y-4 py-4">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                        <input type="hidden" name="idMeta" th:value="${meta.idMeta}" />
+
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text" th:text="#{title}"></span></div>
+                                            <input type="text" name="titulo" class="input input-bordered w-full" th:value="${meta.titulo}" required />
+                                        </label>
+
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text" th:text="#{description}"></span></div>
+                                            <textarea name="descricao" class="textarea textarea-bordered h-24" th:text="${meta.descricao}"></textarea>
+                                        </label>
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text" th:text="#{xp}"></span></div>
+                                                <input type="number" name="xp_recompensa" class="input input-bordered w-full" th:value="${meta.xpRecompensa}" required />
+                                            </label>
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text" th:text="#{coins}"></span></div>
+                                                <input type="number" name="moedas_recompensa" class="input input-bordered w-full" th:value="${meta.moedasRecompensa}" required />
+                                            </label>
+                                        </div>
+
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text" th:text="#{status}"></span></div>
+                                            <select name="status_meta" class="select select-bordered">
+                                                <option value="ATIVA" th:selected="${meta.statusMeta == 'ATIVA'}">ATIVA</option>
+                                                <option value="INATIVA" th:selected="${meta.statusMeta == 'INATIVA'}">INATIVA</option>
+                                            </select>
+                                        </label>
+
+                                        <div class="modal-action">
+                                            <button type="submit" class="btn btn-primary" th:text="#{meta.update}"></button>
+                                        </div>
+                                    </form>
+
+                                    <form method="dialog">
+                                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                    </form>
+                                </div>
+                            </dialog>
                         </div>
                     </main>
                 </div>
@@ -105,47 +193,51 @@
                 <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
 
                     <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-                        <div th:each="meta : ${metasPendentes}">
+
+                        <div th:each="metaPend : ${metasPendentes}">
 
                             <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
-                                    th:onclick="'document.getElementById(\'modal_' + ${meta.idMetaConcluida} + '\').showModal()'">
+                                    th:onclick="'document.getElementById(\'modal_mc_' + ${metaPend.idMetaConcluida} + '\').showModal()'">
 
-
-                                <div th:text="${meta.dataSubmissao}" class="badge badge-accent m-4"></div>
+                                <div th:text="${#temporals.format(metaPend.dataSubmissao, 'dd/MM/yyyy')}" class="badge badge-accent m-4"></div>
                                 <div class="card-body items-center">
-                                    <h2 th:text="${meta.meta.titulo}" class="card-title"></h2>
+                                    <h2 th:text="${metaPend.meta.titulo}" class="card-title"></h2>
                                     <div class="card-actions justify-end">
-                                        <div class="badge badge-outline" th:text="#{user} + ${meta.usuario.nome} "></div>
-                                        <div class="badge badge-outline" th:text="${meta.meta.xpRecompensa} + ' ' + #{xp}"></div>
-                                        <div class="badge badge-outline" th:text="${meta.meta.moedasRecompensa} + ' ' + #{coins}"></div>
+                                        <div class="badge badge-outline" th:text="#{user} + ' ' + ${metaPend.usuario.nome}"></div>
+                                        <div class="badge badge-outline" th:text="${metaPend.meta.xpRecompensa} + ' ' + #{xp}"></div>
+                                        <div class="badge badge-outline" th:text="${metaPend.meta.moedasRecompensa} + ' ' + #{coins}"></div>
                                     </div>
                                 </div>
 
-                                <div class="card-actions justify-end">
-                                    <span class="badge badge-warning" th:text="${meta.status}"></span>
+                                <div class="card-actions justify-end p-2">
+                                    <span class="badge badge-warning" th:text="${metaPend.status}"></span>
                                 </div>
                             </button>
-                            <dialog th:id="'modal_' + ${meta.idMetaConcluida}" class="modal">
+
+                            <dialog th:id="'modal_mc_' + ${metaPend.idMetaConcluida}" class="modal">
                                 <div class="modal-box w-11/12 max-w-2xl">
 
                                     <form th:action="@{/meta/confirmaMeta}" method="post">
 
-                                        <h3 class="font-bold text-2xl" th:text="${meta.meta.titulo}"></h3>
-                                        <p class="py-4" th:text="${meta.meta.descricao}">...</p>
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                        <h3 class="font-bold text-2xl" th:text="${metaPend.meta.titulo}"></h3>
+                                        <p class="py-4" th:text="${metaPend.meta.descricao}">...</p>
                                         <div class="flex justify-start gap-2">
-                                            <div class="badge badge-outline" th:text="${meta.meta.xpRecompensa} + ' ' + #{xp}"></div>
-                                            <div class="badge badge-outline" th:text="${meta.meta.moedasRecompensa} + ' ' + #{coins}"></div>
+                                            <div class="badge badge-outline" th:text="${metaPend.meta.xpRecompensa} + ' ' + #{xp}"></div>
+                                            <div class="badge badge-outline" th:text="${metaPend.meta.moedasRecompensa} + ' ' + #{coins}"></div>
                                         </div>
 
                                         <label class="form-control w-full mt-4">
                                             <div class="label"><span class="label-text" th:text="#{justfy}"></span></div>
-                                            <textarea name="justificativa" class="textarea textarea-bordered font-normal h-24 w-full" th:text="${meta.justificativaTexto}"></textarea>
+                                            <textarea name="justificativa" class="textarea textarea-bordered font-normal h-24 w-full"
+                                                      th:text="${metaPend.justificativaTexto}"></textarea>
                                         </label>
 
-                                        <input type="hidden" name="metaId" th:value="${meta.idMetaConcluida}" />
+                                        <input type="hidden" name="metaId" th:value="${metaPend.idMetaConcluida}" />
 
                                         <div class="modal-action">
-                                            <button type="submit" name="status" th:value="REJEITAR" class="btn btn-outline btn-error" th:text="#{reject}"></button>
+                                            <button type="submit" name="status" value="REJEITAR" class="btn btn-outline btn-error" th:text="#{reject}"></button>
                                             <button type="submit" name="status" value="APROVAR" class="btn btn-primary" th:text="#{aprove}"></button>
                                         </div>
                                     </form>
@@ -160,6 +252,54 @@
 
                 </div>
             </div>
+            <dialog id="modal_create_meta" class="modal">
+                <div class="modal-box w-11/12 max-w-2xl">
+
+                    <h3 class="font-bold text-lg" th:text="#{meta.create}"></h3>
+
+                    <form th:action="@{/meta/adm/criar}" method="post" class="space-y-4 py-4">
+
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                        <label class="form-control w-full">
+                            <div class="label"><span class="label-text" th:text="#{title}"></span></div>
+                            <input type="text" name="titulo" class="input input-bordered w-full" required />
+                        </label>
+
+                        <label class="form-control w-full">
+                            <div class="label"><span class="label-text" th:text="#{description}"></span></div>
+                            <textarea name="descricao" class="textarea textarea-bordered h-24" th:placeholder="#{meta.description.placeholder}"></textarea>
+                        </label>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="form-control w-full">
+                                <div class="label"><span class="label-text" th:text="#{xp}"></span></div>
+                                <input type="number" name="xp_recompensa" value="10" class="input input-bordered w-full" required />
+                            </label>
+                            <label class="form-control w-full">
+                                <div class="label"><span class="label-text" th:text="#{coins}"></span></div>
+                                <input type="number" name="moedas_recompensa" value="0" class="input input-bordered w-full" required />
+                            </label>
+                        </div>
+
+                        <label class="form-control w-full">
+                            <div class="label"><span class="label-text" th:text="#{status}"></span></div>
+                            <select name="status_meta" class="select select-bordered">
+                                <option value="ATIVA" selected>ATIVA</option>
+                                <option value="INATIVA">INATIVA</option>
+                            </select>
+                        </label>
+
+                        <div class="modal-action">
+                            <button type="submit" class="btn btn-primary" th:text="#{create}"></button>
+                        </div>
+                    </form>
+
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                </div>
+            </dialog>
         </main>
     </div>
     <div class="drawer-side">

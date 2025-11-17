@@ -72,7 +72,7 @@ public class MetaController {
                         .getSQLException().getMessage();
             }
             errorMessage = errorMessage.replaceAll("ORA-\\d+: ", "");
-            redirect.addFlashAttribute("error", "Erro: " + errorMessage);
+            redirect.addFlashAttribute("error", messageHelper.get("erro")  + errorMessage);
         }
         return "redirect:/meta/dashboard";
     }
@@ -109,7 +109,7 @@ public class MetaController {
                         .getSQLException().getMessage();
             }
             errorMessage = errorMessage.replaceAll("ORA-\\d+: ", "");
-            redirect.addFlashAttribute("error", "Erro: " + errorMessage);
+            redirect.addFlashAttribute("error", messageHelper.get("erro")  + errorMessage);
         }
         return "redirect:/meta";
     }
@@ -145,7 +145,7 @@ public class MetaController {
                         .getSQLException().getMessage();
             }
             errorMessage = errorMessage.replaceAll("ORA-\\d+: ", "");
-            redirect.addFlashAttribute("error", "Erro: " + errorMessage);
+            redirect.addFlashAttribute("error", messageHelper.get("erro")  + errorMessage);
         }
         return "redirect:/meta/adm";
     }
@@ -172,9 +172,59 @@ public class MetaController {
             redirect.addFlashAttribute("message", messageHelper.get("meta.collect"));
 
         } catch (Exception e) {
-            redirect.addFlashAttribute("error", "Erro ao coletar: " + e.getMessage());
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + e.getMessage());
         }
         return "redirect:/meta";
+    }
+
+    @PostMapping("/adm/criar")
+    public String criarMeta(
+            @RequestParam("titulo") String titulo,
+            @RequestParam("descricao") String descricao,
+            @RequestParam("xp_recompensa") Integer xp,
+            @RequestParam("moedas_recompensa") Integer moedas,
+            @RequestParam("status_meta") String status,
+            RedirectAttributes redirect) {
+
+        try {
+            metaService.criarMeta(titulo, descricao, xp, moedas, status);
+            redirect.addFlashAttribute("message", messageHelper.get("goal") + titulo + messageHelper.get("created.success"));
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + e.getMessage());
+        }
+
+        return "redirect:/meta/adm";
+    }
+
+    @PostMapping("/delete")
+    public String deleteMeta(@RequestParam("metaId") Long metaId, RedirectAttributes redirect ){
+        try {
+            metaService.deleteById(metaId);
+            redirect.addFlashAttribute("message", messageHelper.get("meta.deleted.success"));
+
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/meta/adm";
+    }
+
+    @PostMapping("/adm/atualizar")
+    public String atualizarMeta(
+            @RequestParam("idMeta") Long idMeta,
+            @RequestParam("titulo") String titulo,
+            @RequestParam("descricao") String descricao,
+            @RequestParam("xp_recompensa") Integer xp,
+            @RequestParam("moedas_recompensa") Integer moedas,
+            @RequestParam("status_meta") String status,
+            RedirectAttributes redirect) {
+
+        try {
+            metaService.atualizarMeta(idMeta, titulo, descricao, xp, moedas, status);
+            redirect.addFlashAttribute("message", messageHelper.get("goal") + titulo + messageHelper.get("updated.success"));
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Erro ao atualizar meta: " + e.getMessage());
+        }
+        return "redirect:/meta/adm";
     }
 
     private User getUsuarioLogado(OAuth2User principal) {

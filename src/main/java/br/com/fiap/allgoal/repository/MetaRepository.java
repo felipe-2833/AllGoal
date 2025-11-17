@@ -2,8 +2,11 @@ package br.com.fiap.allgoal.repository;
 
 import br.com.fiap.allgoal.model.Meta;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,4 +23,17 @@ public interface MetaRepository extends JpaRepository<Meta, Long> {
                     ")",
             nativeQuery = true)
     List<Meta> findMetasPendentesPorUsuario(@Param("idUsuario") Long idUsuario);
+
+    @Modifying
+    @Transactional
+    @Procedure(procedureName = "pkg_gs_admin.proc_insert_meta",
+            outputParameterName = "p_id_meta_out"
+    )
+    Long inserirMeta(
+            @Param("p_titulo") String titulo,
+            @Param("p_descricao") String descricao,
+            @Param("p_xp_recompensa") Integer xp,
+            @Param("p_moedas_recompensa") Integer moedas,
+            @Param("p_status_meta") String status
+    );
 }

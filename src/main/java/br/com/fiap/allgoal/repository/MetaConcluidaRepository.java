@@ -1,6 +1,7 @@
 package br.com.fiap.allgoal.repository;
 
 import br.com.fiap.allgoal.enums.Status;
+import br.com.fiap.allgoal.model.Meta;
 import br.com.fiap.allgoal.model.MetaConcluida;
 import br.com.fiap.allgoal.model.User;
 import jakarta.transaction.Transactional;
@@ -38,4 +39,9 @@ public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Lo
     );
 
     List<MetaConcluida> findByUsuario(User usuario);
+
+    @Modifying
+    void deleteByMeta(Meta meta);
+
+    long countByMetaAndStatusIn(Meta meta, List<Status> statuses);
 }
