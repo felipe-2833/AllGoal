@@ -35,6 +35,19 @@ public class UserService {
         return xpTeto - xpTotal;
     }
 
+    public Long getXpNecessatio(User usuario) {
+        long nivel = usuario.getNivel();
+        long xpTotal = usuario.getXpTotal();
+        long xp = 0;
+        for (long j = 1; j < nivel; j++) {
+            xp = xp + (100 * j);
+        }
+
+        xp = xpTotal - xp;
+
+        return xp;
+    }
+
     public List<User> getTop5Ranking() {
         return userRepository.findTop5ByOrderByXpTotalDesc();
     }

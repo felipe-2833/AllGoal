@@ -39,9 +39,13 @@ public class MetaController {
         long ranking = userRepository.getRanking(usuario.getXpTotal());
         var metas = metaService.getMetasPendentes(usuario);
         long xpRestante = userService.getXpRestanteParaProximoNivel(usuario);
+        long xpNess = userService.getXpNecessatio(usuario);
+        Integer xpMax = 100 * usuario.getNivel();
 
         model.addAttribute("user", usuario);
         model.addAttribute("metas", metas);
+        model.addAttribute("xpNess", xpNess);
+        model.addAttribute("xpMax", xpMax);
         model.addAttribute("metasConcluidas", metasConcluidas);
         model.addAttribute("ranking", ranking);
         model.addAttribute("xpRestante", xpRestante);

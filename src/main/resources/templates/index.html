@@ -66,6 +66,10 @@
                     </div>
                     <div class="stat-title" th:text="#{level}"></div>
                     <div class="stat-value text-primary" th:text="${user.nivel}"></div>
+                    <progress class="progress progress-primary w-full"
+                              th:value="${xpNess}"
+                              th:max="${xpMax}">
+                    </progress>
                     <div class="stat-desc text-wrap" th:text="${xpRestante} + #{niveldesc}"></div>
                 </div>
 
