@@ -61,7 +61,7 @@ git clone [https://github.com/felipe-2833/AllGoal.git](https://github.com/felipe
 ```
 **2.Setar variaveis de ambiente :**
 
-GitHub: ID e secret -> mandado junto aos links
+GitHub: ID e secret + api_key -> mandado junto aos links
 
 **3. Link :**
 ```bash
