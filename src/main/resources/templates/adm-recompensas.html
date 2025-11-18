@@ -77,7 +77,7 @@
         <main class="p-4 flex flex-col items-center">
 
             <div class="flex justify-between items-left w-full px-4">
-                <h1>LojaADM</h1>
+                <button class="btn btn-primary" onclick="modal_create_recompensa.showModal()" th:text="#{recompensa.create}"></button>
             </div>
 
             <div role="tablist" class="tabs tabs-lifted tabs-lg w-full mt-4">
@@ -86,16 +86,95 @@
                 <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
 
                     <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-                        <div th:each="recompensa : ${recompensas}" class="card card-border bg-base-300 w-96">
-                            <div class="badge badge-accent m-4"><span th:text="${recompensa.custoMoedas}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg></div>
+                        <div th:each="recompensa : ${recompensas}">
+                            <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
+                                    th:onclick="'document.getElementById(\'modal_' + ${recompensa.idRecompensa} + '\').showModal()'">
 
-                            <div class="card-body items-center">
-                                <h2 th:text="${recompensa.nomeItem}" class="card-title"></h2>
-                                <p class="py-4" th:text="${recompensa.descricao}"></p>
-                                <div class="card-actions justify-end">
-                                    <div class="badge badge-outline" th:text="${recompensa.estoque} + ' ' + #{storage2}"></div>
+                                <div class="badge badge-accent m-4"><span th:text="${recompensa.custoMoedas}"></span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="inline-block h-4 w-4 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125" /></svg></div>
+
+                                <div class="card-body items-center">
+                                    <h2 th:text="${recompensa.nomeItem}" class="card-title"></h2>
+                                    <p class="py-4" th:text="${recompensa.descricao}"></p>
+                                    <div class="card-actions justify-end">
+                                        <div class="badge badge-outline" th:text="${recompensa.estoque} + ' ' + #{storage2}"></div>
+                                    </div>
                                 </div>
-                            </div>
+
+                            </button>
+                            <dialog th:id="'modal_' + ${recompensa.idRecompensa}" class="modal">
+                                <div class="modal-box w-11/12 max-w-2xl">
+                                    <h3 class="font-bold text-2xl" th:text="${recompensa.nomeItem}"></h3>
+                                    <p class="py-4" th:text="${recompensa.descricao}">...</p>
+                                    <div class="flex justify-start gap-2">
+                                        <div class="badge badge-outline" th:text="${recompensa.estoque} + ' ' + #{storage2}"></div>
+                                        <div class="badge badge-outline" th:text="${recompensa.custoMoedas} + ' ' + #{coins}"></div>
+                                    </div>
+
+                                    <input type="hidden" name="metaId" th:value="${recompensa.idRecompensa}" />
+
+                                    <div class="modal-action">
+
+                                        <form method="dialog">
+                                            <button class="btn" th:text="#{close}"></button>
+                                        </form>
+
+                                        <button class="btn btn-primary"
+                                                th:text="#{update}"
+                                                th:onclick="'modal_update_' + ${recompensa.idRecompensa} + '.showModal()'">
+                                        </button>
+
+                                        <form th:action="@{/loja/delete}" method="post">
+                                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                            <input type="hidden" name="recompensaId" th:value="${recompensa.idRecompensa}" />
+                                            <button type="submit" class="btn btn-outline btn-error" th:text="#{delete}"></button>
+                                        </form>
+                                    </div>
+
+                                    <form method="dialog">
+                                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                    </form>
+                                </div>
+                            </dialog>
+                            <dialog th:id="'modal_update_' + ${recompensa.idRecompensa}" class="modal">
+                                <div class="modal-box w-11/12 max-w-2xl">
+                                    <h3 class="font-bold text-lg" th:text="#{update}"></h3>
+
+                                    <form th:action="@{/loja/adm/atualizar}" method="post" class="space-y-4 py-4">
+                                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                                        <input type="hidden" name="idRecompensa" th:value="${recompensa.idRecompensa}" />
+
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text" th:text="#{item.name}"></span></div>
+                                            <input type="text" name="nome" class="input input-bordered w-full" th:value="${recompensa.nomeItem}" required />
+                                        </label>
+
+                                        <label class="form-control w-full">
+                                            <div class="label"><span class="label-text" th:text="#{description}"></span></div>
+                                            <textarea name="descricao" class="textarea textarea-bordered h-24" th:text="${recompensa.descricao}"></textarea>
+                                        </label>
+
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text" th:text="#{storage}"></span></div>
+                                                <input type="number" name="estoque" class="input input-bordered w-full" th:value="${recompensa.estoque}" required />
+                                            </label>
+                                            <label class="form-control w-full">
+                                                <div class="label"><span class="label-text" th:text="#{cost}"></span></div>
+                                                <input type="number" name="custo" class="input input-bordered w-full" th:value="${recompensa.custoMoedas}" required />
+                                            </label>
+                                        </div>
+
+                                        <div class="modal-action">
+                                            <button type="submit" class="btn btn-primary" th:text="#{update}"></button>
+                                        </div>
+                                    </form>
+
+                                    <form method="dialog">
+                                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                                    </form>
+                                </div>
+                            </dialog>
                         </div>
                     </main>
 
@@ -118,6 +197,11 @@
                                     <div class="badge badge-outline" th:text="${compra.custoPago} + ' ' + #{coins}"></div>
                                     <div class="badge badge-outline" th:text="#{user} + ' ' + ${compra.usuario.nome}"></div>
                                 </div>
+                                <form th:action="@{/loja/adm/concluir}" method="POST" class="flex-1">
+                                    <input type="hidden" name="compraId" th:value="${compra.idCompra}">
+                                    <button type="submit" class="btn btn-primary w-full" th:text="#{conclude}"></button>
+                                </form>
+
                             </div>
                             <div class="card-actions justify-end p-2">
                                 <span class="badge badge-warning" th:text="${compra.statusCompra}"></span>
@@ -126,6 +210,46 @@
                     </main>
                 </div>
             </div>
+            <dialog id="modal_create_recompensa" class="modal">
+                <div class="modal-box w-11/12 max-w-2xl">
+
+                    <h3 class="font-bold text-lg" th:text="#{recompensa.create}"></h3>
+
+                    <form th:action="@{/loja/adm/criar}" method="post" class="space-y-4 py-4">
+
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                        <label class="form-control w-full">
+                            <div class="label"><span class="label-text" th:text="#{item.name}"></span></div>
+                            <input type="text" name="nome_item" class="input input-bordered w-full" required />
+                        </label>
+
+                        <label class="form-control w-full">
+                            <div class="label"><span class="label-text" th:text="#{description}"></span></div>
+                            <textarea name="descricao" class="textarea textarea-bordered h-24" th:placeholder="#{meta.description.placeholder}"></textarea>
+                        </label>
+
+                        <div class="grid grid-cols-2 gap-4">
+                            <label class="form-control w-full">
+                                <div class="label"><span class="label-text" th:text="#{storage}"></span></div>
+                                <input type="number" name="estoque" value="10" class="input input-bordered w-full" required />
+                            </label>
+                            <label class="form-control w-full">
+                                <div class="label"><span class="label-text" th:text="#{cost}"></span></div>
+                                <input type="number" name="custo_moedas" value="100" class="input input-bordered w-full" required />
+                            </label>
+                        </div>
+
+                        <div class="modal-action">
+                            <button type="submit" class="btn btn-primary" th:text="#{create}"></button>
+                        </div>
+                    </form>
+
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                    </form>
+                </div>
+            </dialog>
         </main>
     </div>
     <div class="drawer-side">

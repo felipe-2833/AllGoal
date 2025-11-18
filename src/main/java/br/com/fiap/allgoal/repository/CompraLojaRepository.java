@@ -2,6 +2,8 @@ package br.com.fiap.allgoal.repository;
 
 import br.com.fiap.allgoal.enums.StatusCompra;
 import br.com.fiap.allgoal.model.CompraLoja;
+import br.com.fiap.allgoal.model.Meta;
+import br.com.fiap.allgoal.model.Recompensa;
 import br.com.fiap.allgoal.model.User;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -32,4 +34,6 @@ public interface CompraLojaRepository extends JpaRepository<CompraLoja, Long> {
             @Param("p_id_compra") Long idCompra,
             @Param("p_id_usuario_sessao") Long idUsuarioSessao
     );
+
+    List<CompraLoja> findAllByRecompensa(Recompensa recompensa);
 }

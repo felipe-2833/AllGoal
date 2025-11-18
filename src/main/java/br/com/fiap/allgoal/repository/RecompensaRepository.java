@@ -20,4 +20,14 @@ public interface RecompensaRepository extends JpaRepository<Recompensa, Long> {
             @Param("p_id_usuario") Long idUsuario,
             @Param("p_id_recompensa") Long idRecompensa
     );
+
+    @Modifying
+    @Transactional
+    @Procedure(procedureName = "pkg_gs_admin.proc_insert_recompensa", outputParameterName = "p_id_recompensa_out")
+    Long inserirRecompensa(
+            @Param("p_nome_item") String nomeItem,
+            @Param("p_descricao") String descricao,
+            @Param("p_custo_moedas") Long custoMoedas,
+            @Param("p_estoque") Integer estoque
+    );
 }

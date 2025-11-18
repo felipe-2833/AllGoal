@@ -188,7 +188,7 @@ public class MetaController {
 
         try {
             metaService.criarMeta(titulo, descricao, xp, moedas, status);
-            redirect.addFlashAttribute("message", messageHelper.get("goal") + titulo + messageHelper.get("created.success"));
+            redirect.addFlashAttribute("message", messageHelper.get("goal") + " " + titulo + " " + messageHelper.get("created.success"));
         } catch (Exception e) {
             redirect.addFlashAttribute("error", messageHelper.get("erro") + e.getMessage());
         }

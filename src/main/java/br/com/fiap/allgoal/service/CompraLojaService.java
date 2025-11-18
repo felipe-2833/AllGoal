@@ -53,6 +53,16 @@ public class CompraLojaService {
         }
     }
 
+    public void concluirRecompensa(Long idCompra) {
+        try {
+            CompraLoja compraLoja = getCompraLoja(idCompra);
+            compraLoja.setStatusCompra(StatusCompra.CONCLUIDO);
+            compraLojaRepository.save(compraLoja);
+        } catch (Exception e) {
+            throw new CompraException(limparMensagemOracle(e));
+        }
+    }
+
     public void reembolsarCompra(Long idCompra, Long idUsuario) {
         try {
             compraLojaRepository.reembolsarCompra(idCompra, idUsuario);

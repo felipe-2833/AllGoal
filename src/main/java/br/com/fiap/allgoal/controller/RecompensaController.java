@@ -137,4 +137,65 @@ public class RecompensaController {
         model.addAttribute("user", usuario);
         return "adm-recompensas";
     }
+
+    @PostMapping("/adm/concluir")
+    public String concluirRecompensa(@RequestParam("compraId") Long compraId,
+                                   @AuthenticationPrincipal OAuth2User user,
+                                   RedirectAttributes redirect) {
+        try {
+            compraLojaService.concluirRecompensa(compraId);
+            redirect.addFlashAttribute("message", messageHelper.get("recompensa.concluir.sucesso"));
+        } catch (CompraException e) {
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + ": " + e.getMessage());
+        }
+        return "redirect:/loja/adm";
+    }
+
+    @PostMapping("/adm/criar")
+    public String criarMeta(
+            @RequestParam("nome_item") String nome,
+            @RequestParam("descricao") String descricao,
+            @RequestParam("estoque") Integer estoque,
+            @RequestParam("custo_moedas") Long custo,
+            RedirectAttributes redirect) {
+
+        try {
+            recompensaService.criarRecompensa(nome, descricao, estoque, custo);
+            redirect.addFlashAttribute("message", messageHelper.get("reward") + " " + nome + " " + messageHelper.get("created.success"));
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", messageHelper.get("erro") + e.getMessage());
+        }
+
+        return "redirect:/loja/adm";
+    }
+
+    @PostMapping("/delete")
+    public String deleteRecompensa(@RequestParam("recompensaId") Long recompensaId, RedirectAttributes redirect ){
+        try {
+            recompensaService.deleteById(recompensaId);
+            redirect.addFlashAttribute("message", messageHelper.get("recompensa.deleted.success"));
+
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/loja/adm";
+    }
+
+    @PostMapping("/adm/atualizar")
+    public String atualizarRecompensa(
+            @RequestParam("idRecompensa") Long idRecompensa,
+            @RequestParam("nome") String nome,
+            @RequestParam("descricao") String descricao,
+            @RequestParam("estoque") Integer estoque,
+            @RequestParam("custo") Long custo,
+            RedirectAttributes redirect) {
+
+        try {
+            recompensaService.atualizarRecompensa(idRecompensa, nome, descricao, estoque, custo);
+            redirect.addFlashAttribute("message", messageHelper.get("reward") + " " + nome + " " + messageHelper.get("updated.success"));
+        } catch (Exception e) {
+            redirect.addFlashAttribute("error", "Erro ao atualizar recompensa: " + e.getMessage());
+        }
+        return "redirect:/loja/adm";
+    }
 }

@@ -121,14 +121,14 @@
                                         </form>
 
                                         <button class="btn btn-primary"
-                                                th:text="#{meta.update}"
+                                                th:text="#{update}"
                                                 th:onclick="'modal_update_' + ${meta.idMeta} + '.showModal()'">
                                         </button>
 
                                         <form th:action="@{/meta/delete}" method="post">
                                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                                             <input type="hidden" name="metaId" th:value="${meta.idMeta}" />
-                                            <button type="submit" class="btn btn-outline btn-error" th:text="#{deletegoal}"></button>
+                                            <button type="submit" class="btn btn-outline btn-error" th:text="#{delete}"></button>
                                         </form>
                                     </div>
 
@@ -139,7 +139,7 @@
                             </dialog>
                             <dialog th:id="'modal_update_' + ${meta.idMeta}" class="modal">
                                 <div class="modal-box w-11/12 max-w-2xl">
-                                    <h3 class="font-bold text-lg" th:text="#{meta.update}"></h3>
+                                    <h3 class="font-bold text-lg" th:text="#{update}"></h3>
 
                                     <form th:action="@{/meta/adm/atualizar}" method="post" class="space-y-4 py-4">
                                         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
@@ -176,7 +176,7 @@
                                         </label>
 
                                         <div class="modal-action">
-                                            <button type="submit" class="btn btn-primary" th:text="#{meta.update}"></button>
+                                            <button type="submit" class="btn btn-primary" th:text="#{update}"></button>
                                         </div>
                                     </form>
 
