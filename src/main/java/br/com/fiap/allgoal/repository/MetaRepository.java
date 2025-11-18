@@ -1,6 +1,9 @@
 package br.com.fiap.allgoal.repository;
 
 import br.com.fiap.allgoal.model.Meta;
+import br.com.fiap.allgoal.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -36,4 +39,9 @@ public interface MetaRepository extends JpaRepository<Meta, Long> {
             @Param("p_moedas_recompensa") Integer moedas,
             @Param("p_status_meta") String status
     );
+
+    @Query("SELECT m FROM Meta m WHERE m.statusMeta = 'ATIVA' " +
+            "AND NOT EXISTS (SELECT mc FROM MetaConcluida mc WHERE mc.meta = m AND mc.usuario = :usuario) " +
+            "ORDER BY m.xpRecompensa DESC")
+    Page<Meta> findMetasPendentesParaUsuario(@Param("usuario") User usuario, Pageable pageable);
 }

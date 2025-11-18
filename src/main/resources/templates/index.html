@@ -139,7 +139,7 @@
         </div>
 
         <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-            <div th:each="meta : ${metas}">
+            <div th:each="meta : ${metas.content}">
 
                 <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
                         th:onclick="'document.getElementById(\'modal_' + ${meta.idMeta} + '\').showModal()'">
@@ -185,6 +185,7 @@
                     </div>
                 </dialog>
             </div>
+            <div th:replace="~{fragments/pagination :: controls(pageObj=${metas}, url='/meta/dashboard', paramName='page')}"></div>
         </main>
 
     </div>

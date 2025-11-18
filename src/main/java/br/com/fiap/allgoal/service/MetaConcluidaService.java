@@ -7,6 +7,8 @@ import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.MetaConcluidaRepository;
 import br.com.fiap.allgoal.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -54,6 +56,14 @@ public class MetaConcluidaService {
         meta.setJustificativaTexto(justificativa);
         meta.setDataAprovacao(LocalDate.now());
         metaConcluidaRepository.save(meta);
+    }
+
+    public Page<MetaConcluida> getHistoricoPorUsuario(User usuario, Pageable pageable) {
+        return metaConcluidaRepository.findByUsuarioOrderByDataSubmissaoDesc(usuario, pageable);
+    }
+
+    public Page<MetaConcluida> getAllMetaPendentes(Pageable pageable) {
+        return metaConcluidaRepository.findByStatusOrderByDataSubmissaoAsc(Status.PENDENTE_APROVACAO, pageable);
     }
 
     public void coletarRecompensa(Long metaConcluidaId, User usuario) {

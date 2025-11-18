@@ -14,6 +14,8 @@ import br.com.fiap.allgoal.repository.RecompensaRepository;
 import br.com.fiap.allgoal.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.GenericJDBCException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -73,6 +75,10 @@ public class RecompensaService {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao atualizar recompensa: " + limparMensagemOracle(e));
         }
+    }
+
+    public Page<Recompensa> getAllRecompensas(Pageable pageable) {
+        return recompensaRepository.findAll(pageable);
     }
 
     public List<Recompensa> getRecompensasDisponiveis() {

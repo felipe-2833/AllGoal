@@ -8,6 +8,8 @@ import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.MetaConcluidaRepository;
 import br.com.fiap.allgoal.repository.MetaRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,5 +100,13 @@ public class MetaService {
             }
         }
         return e.getMessage();
+    }
+
+    public Page<Meta> getMetasPendentes(User usuario, Pageable pageable) {
+        return metaRepository.findMetasPendentesParaUsuario(usuario, pageable);
+    }
+
+    public Page<Meta> getAllMetas(Pageable pageable) {
+        return metaRepository.findAll(pageable);
     }
 }

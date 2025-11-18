@@ -78,11 +78,11 @@
 
             <div role="tablist" class="tabs tabs-lifted tabs-lg w-full mt-4">
 
-                <input type="radio" name="my_tabs" role="tab" class="tab" th:aria-label="#{goals.todo}" checked />
+                <input type="radio" id="metas_pendentes" name="my_tabs" role="tab" class="tab" th:aria-label="#{goals.todo}" checked />
                 <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
 
                     <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-                        <div th:each="meta : ${metas}">
+                        <div th:each="meta : ${metas.content}">
 
                             <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
                                     th:onclick="'document.getElementById(\'modal_' + ${meta.idMeta} + '\').showModal()'">
@@ -128,14 +128,15 @@
                                 </div>
                             </dialog>
                         </div>
+                        <div th:replace="~{fragments/pagination :: controls(pageObj=${metas}, url='/meta', paramName='pageMeta')}"></div>
                     </main>
                 </div>
 
-                <input type="radio" name="my_tabs" role="tab" class="tab" th:aria-label="#{goals.history}" />
+                <input type="radio" id="metas_concluidas" name="my_tabs" role="tab" class="tab" th:aria-label="#{goals.history}" />
                 <div role="tabpanel" class="tab-content bg-base-200 border-base-300 rounded-box p-6">
 
                     <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-                        <div th:each="hist : ${metasHistorico}">
+                        <div th:each="hist : ${metasHistorico.content}">
 
                             <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
                                     th:onclick="'document.getElementById(\'modal_' + ${hist.idMetaConcluida} + '\').showModal()'">
@@ -197,6 +198,7 @@
                                 </div>
                             </dialog>
                         </div>
+                        <div th:replace="~{fragments/pagination :: controls(pageObj=${metasHistorico}, url='/meta', paramName='pageHist')}"></div>
                     </main>
                 </div>
             </div>
@@ -275,6 +277,26 @@
         </ul>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const storageKey = "activeTab_" + window.location.pathname;
+        const savedTabId = localStorage.getItem(storageKey);
+
+        if (savedTabId) {
+            const tabToSelect = document.getElementById(savedTabId);
+            if (tabToSelect) {
+                tabToSelect.checked = true;
+            }
+        }
+
+        const tabs = document.querySelectorAll('input[name="my_tabs"]');
+        tabs.forEach(tab => {
+            tab.addEventListener('change', function() {
+                localStorage.setItem(storageKey, this.id);
+            });
+        });
+    });
+</script>
 
 </body>
 </html>

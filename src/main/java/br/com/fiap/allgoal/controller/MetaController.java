@@ -11,6 +11,8 @@ import br.com.fiap.allgoal.service.MetaConcluidaService;
 import br.com.fiap.allgoal.service.MetaService;
 import br.com.fiap.allgoal.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -33,22 +35,26 @@ public class MetaController {
     private final MessageHelper messageHelper;
 
     @GetMapping("/dashboard")
-    public String index(Model model, @AuthenticationPrincipal OAuth2User user) {
+    public String index(Model model,
+                        @AuthenticationPrincipal OAuth2User user,
+                        @RequestParam(defaultValue = "0") int page) {
+
         User usuario = getUsuarioLogado(user);
         long metasConcluidas = metaConcluidaRepository.countByUsuarioAndStatus(usuario, Status.CONCLUIDA_E_COLETADA);
         long ranking = userRepository.getRanking(usuario.getXpTotal());
-        var metas = metaService.getMetasPendentes(usuario);
         long xpRestante = userService.getXpRestanteParaProximoNivel(usuario);
         long xpNess = userService.getXpNecessatio(usuario);
         Integer xpMax = 100 * usuario.getNivel();
+        Page<Meta> metasPage = metaService.getMetasPendentes(usuario, PageRequest.of(page, 9));
 
         model.addAttribute("user", usuario);
-        model.addAttribute("metas", metas);
+        model.addAttribute("metas", metasPage);
         model.addAttribute("xpNess", xpNess);
         model.addAttribute("xpMax", xpMax);
         model.addAttribute("metasConcluidas", metasConcluidas);
         model.addAttribute("ranking", ranking);
         model.addAttribute("xpRestante", xpRestante);
+
         return "index";
     }
 
@@ -78,14 +84,19 @@ public class MetaController {
     }
 
     @GetMapping
-    public String meta(Model model, @AuthenticationPrincipal OAuth2User user) {
-        User usuario = getUsuarioLogado(user);
-        var metas = metaService.getMetasPendentes(usuario);
-        List<MetaConcluida> metasHistorico = metaConcluidaService.getHistoricoPorUsuario(usuario);
+    public String meta(Model model,
+                       @AuthenticationPrincipal OAuth2User user,
+                       @RequestParam(defaultValue = "0") int pageMeta,
+                       @RequestParam(defaultValue = "0") int pageHist) {
 
-        model.addAttribute("metasHistorico", metasHistorico);
+        User usuario = getUsuarioLogado(user);
+        Page<Meta> metasPage = metaService.getMetasPendentes(usuario, PageRequest.of(pageMeta, 9));
+        Page<MetaConcluida> historicoPage = metaConcluidaService.getHistoricoPorUsuario(usuario, PageRequest.of(pageHist, 9));
+
         model.addAttribute("user", usuario);
-        model.addAttribute("metas", metas);
+        model.addAttribute("metas", metasPage);
+        model.addAttribute("metasHistorico", historicoPage);
+
         return "meta";
     }
 
@@ -115,14 +126,19 @@ public class MetaController {
     }
 
     @GetMapping("/adm")
-    public String metaAdm(Model model, @AuthenticationPrincipal OAuth2User user) {
-        User usuario = getUsuarioLogado(user);
-        var metas = metaService.getAllMetas();
-        List<MetaConcluida> metasPendentes = metaConcluidaService.getAllMetaPendentes();
+    public String metaAdm(Model model,
+                          @AuthenticationPrincipal OAuth2User user,
+                          @RequestParam(defaultValue = "0") int pageCriadas,
+                          @RequestParam(defaultValue = "0") int pageValidacao) {
 
-        model.addAttribute("metasPendentes", metasPendentes);
+        User usuario = getUsuarioLogado(user);
+        Page<Meta> todasMetasPage = metaService.getAllMetas(PageRequest.of(pageCriadas, 9));
+        Page<MetaConcluida> pendentesPage = metaConcluidaService.getAllMetaPendentes(PageRequest.of(pageValidacao, 9));
+
         model.addAttribute("user", usuario);
-        model.addAttribute("metas", metas);
+        model.addAttribute("metas", todasMetasPage);
+        model.addAttribute("metasPendentes", pendentesPage);
+
         return "adm-metas";
     }
 

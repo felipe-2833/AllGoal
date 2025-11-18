@@ -73,7 +73,7 @@
         </main>
 
         <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
-            <div th:each="compra : ${compras}" class="card card-border bg-base-300 w-96">
+            <div th:each="compra : ${compras.content}" class="card card-border bg-base-300 w-96">
                 <div class="badge badge-accent m-4" th:text="${compra.dataCompra}"></div>
 
                 <div class="card-body items-center">
@@ -109,6 +109,7 @@
 
                 </div>
             </div>
+            <div th:replace="~{fragments/pagination :: controls(pageObj=${compras}, url='/loja/inventario', paramName='page')}"></div>
         </main>
     </div>
     <div class="drawer-side">

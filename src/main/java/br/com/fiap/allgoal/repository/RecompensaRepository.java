@@ -2,6 +2,8 @@ package br.com.fiap.allgoal.repository;
 
 import br.com.fiap.allgoal.model.Recompensa;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -30,4 +32,6 @@ public interface RecompensaRepository extends JpaRepository<Recompensa, Long> {
             @Param("p_custo_moedas") Long custoMoedas,
             @Param("p_estoque") Integer estoque
     );
+
+    Page<Recompensa> findAll(Pageable pageable);
 }

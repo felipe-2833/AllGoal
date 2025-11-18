@@ -10,6 +10,8 @@ import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.CompraLojaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.GenericJDBCException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,6 +81,14 @@ public class CompraLojaService {
             } catch (Exception ignored) { }
         }
         return e.getMessage();
+    }
+
+    public Page<CompraLoja> getItensPorUsuario(User usuario, Pageable pageable) {
+        return compraLojaRepository.findInventarioOrdenado(usuario, pageable);
+    }
+
+    public Page<CompraLoja> getAllComprasSolicitadas(Pageable pageable) {
+        return compraLojaRepository.findAllByStatusCompra(StatusCompra.SOLICITADO, pageable);
     }
 
     public CompraLoja getCompraLoja(Long id) {

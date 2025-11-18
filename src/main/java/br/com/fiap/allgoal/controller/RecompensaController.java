@@ -13,6 +13,8 @@ import br.com.fiap.allgoal.repository.UserRepository;
 import br.com.fiap.allgoal.service.CompraLojaService;
 import br.com.fiap.allgoal.service.RecompensaService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -37,12 +39,15 @@ public class RecompensaController {
     private final CompraLojaService compraLojaService;
 
     @GetMapping
-    public String loja(Model model, @AuthenticationPrincipal OAuth2User user) {
-        User usuario = getUsuarioLogado(user);
-        List<Recompensa> recompensas = recompensaService.getRecompensasDisponiveis();
+    public String loja(Model model,
+                       @AuthenticationPrincipal OAuth2User user,
+                       @RequestParam(defaultValue = "0") int page) {
 
-        model.addAttribute("recompensas", recompensas);
+        User usuario = getUsuarioLogado(user);
+        Page<Recompensa> recompensasPage = recompensaService.getAllRecompensas(PageRequest.of(page, 8));
+
         model.addAttribute("user", usuario);
+        model.addAttribute("recompensas", recompensasPage);
         return "loja";
     }
 
@@ -68,13 +73,16 @@ public class RecompensaController {
     }
 
     @GetMapping("/inventario")
-    public String inventario(Model model, @AuthenticationPrincipal OAuth2User user) {
-        User usuario = getUsuarioLogado(user);
-        List<CompraLoja> compras = compraLojaService.getItensPorUsuario(usuario);
+    public String inventario(Model model,
+                             @AuthenticationPrincipal OAuth2User user,
+                             @RequestParam(defaultValue = "0") int page) {
 
-        model.addAttribute("compras", compras);
-        model.addAttribute("listastatus", StatusCompra.values());
+        User usuario = getUsuarioLogado(user);
+        Page<CompraLoja> comprasPage = compraLojaService.getItensPorUsuario(usuario, PageRequest.of(page, 9));
+
         model.addAttribute("user", usuario);
+        model.addAttribute("compras", comprasPage);
+        model.addAttribute("listastatus", StatusCompra.values());
         return "inventario";
     }
 
@@ -127,14 +135,19 @@ public class RecompensaController {
     }
 
     @GetMapping("/adm")
-    public String lojaAdm(Model model, @AuthenticationPrincipal OAuth2User user) {
-        User usuario = getUsuarioLogado(user);
-        List<Recompensa> recompensas = recompensaService.getAllRecompensas();
-        List<CompraLoja> comprasSolicitadas = compraLojaService.getAllComprasSolicitadas();
+    public String lojaAdm(Model model,
+                          @AuthenticationPrincipal OAuth2User user,
+                          @RequestParam(defaultValue = "0") int pageItens,
+                          @RequestParam(defaultValue = "0") int pageSolicitacoes) {
 
-        model.addAttribute("compras", comprasSolicitadas);
-        model.addAttribute("recompensas", recompensas);
+        User usuario = getUsuarioLogado(user);
+        Page<Recompensa> recompensasPage = recompensaService.getAllRecompensas(PageRequest.of(pageItens, 9));
+        Page<CompraLoja> solicitadasPage = compraLojaService.getAllComprasSolicitadas(PageRequest.of(pageSolicitacoes, 9));
+
         model.addAttribute("user", usuario);
+        model.addAttribute("recompensas", recompensasPage);
+        model.addAttribute("compras", solicitadasPage);
+
         return "adm-recompensas";
     }
 

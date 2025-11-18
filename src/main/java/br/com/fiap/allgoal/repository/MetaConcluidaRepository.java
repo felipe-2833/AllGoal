@@ -5,6 +5,8 @@ import br.com.fiap.allgoal.model.Meta;
 import br.com.fiap.allgoal.model.MetaConcluida;
 import br.com.fiap.allgoal.model.User;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -44,4 +46,7 @@ public interface MetaConcluidaRepository extends JpaRepository<MetaConcluida, Lo
     void deleteByMeta(Meta meta);
 
     long countByMetaAndStatusIn(Meta meta, List<Status> statuses);
+
+    Page<MetaConcluida> findByUsuarioOrderByDataSubmissaoDesc(User usuario, Pageable pageable);
+    Page<MetaConcluida> findByStatusOrderByDataSubmissaoAsc(Status status, Pageable pageable);
 }
