@@ -1,6 +1,7 @@
 package br.com.fiap.allgoal.service;
 
 import br.com.fiap.allgoal.config.MessageHelper;
+import br.com.fiap.allgoal.enums.Roles;
 import br.com.fiap.allgoal.model.User;
 import br.com.fiap.allgoal.repository.UserRepository;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -48,7 +49,16 @@ public class UserService {
         return xp;
     }
 
+    public void trocarRole(User user) {
+        if (user.getRole() == Roles.ADMIN) {
+            user.setRole(Roles.FUNCIONARIO);
+        } else {
+            user.setRole(Roles.ADMIN);
+        }
+        userRepository.save(user);
+    }
+
     public List<User> getTop5Ranking() {
-        return userRepository.findTop5ByOrderByXpTotalDesc();
+        return userRepository.findTop5ByRoleOrderByXpTotalDesc(Roles.FUNCIONARIO);
     }
 }

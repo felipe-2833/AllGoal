@@ -54,7 +54,7 @@ public class User {
         this.nome = principal.getAttributes().get("name").toString();
         this.email = email;
         this.avatarUrl = principal.getAttributes().get("avatar_url").toString();
-        this.role = Roles.ADMIN;
+        this.role = Roles.FUNCIONARIO;
     }
 
 }

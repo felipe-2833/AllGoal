@@ -50,6 +50,13 @@
                 <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
                     <li><a class="justify-between" th:text="${user.nome}"></a></li>
                     <input type="checkbox" value="night" class="toggle theme-controller" />
+                    <li>
+                        <form th:action="@{/trocar-role}" method="post" class="p-0">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                            <button type="submit" class="w-full text-left flex justify-between items-center p-2" th:text="#{changerole}"></button>
+                        </form>
+                    </li>
                     <li><a href="/logout">Logout</a></li>
                 </ul>
             </div>
@@ -59,7 +66,7 @@
             <span th:text="${message}"></span>
         </div>
         <main class="p-4 flex flex-col items-center">
-            <div class="stats shadow">
+            <div th:if="${user.role.name() == 'FUNCIONARIO'}" class="stats shadow">
                 <div class="stat">
                     <div class="stat-figure text-primary">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-8 w-8 stroke-current"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
@@ -117,7 +124,7 @@
                 </div>
             </div>
 
-            <div class="hero bg-base-200 mt-8 rounded-lg max-w-4xl">
+            <div th:if="${user.role.name() == 'FUNCIONARIO'}" class="hero bg-base-200 mt-8 rounded-lg max-w-4xl">
                 <div class="hero-content flex-col lg:flex-row">
                     <img
                             th:src="@{/images/mascote.png}"
@@ -129,16 +136,29 @@
                     </div>
                 </div>
             </div>
+
+            <div th:if="${user.role.name() == 'ADMIN'}" class="hero bg-base-200 mt-8 rounded-lg max-w-4xl">
+                <div class="hero-content flex-col lg:flex-row">
+                    <img
+                            th:src="@{/images/mascote-adm-dash.png}"
+                            class="max-w-xs sm:max-w-sm rounded-full shadow-2xl"
+                    />
+                    <div class="max-w-md">
+                        <h1 class="text-5xl font-bold" th:text="#{hi} + ' ' + ${user.nome}"></h1>
+                        <p class="py-6" th:text="#{dashboardadmintext}"></p>
+                    </div>
+                </div>
+            </div>
         </main>
 
-        <div class="flex flex-col w-full my-8 px-8">
+        <div th:if="${user.role.name() == 'FUNCIONARIO'}" class="flex flex-col w-full my-8 px-8">
 
             <h2 class="text-3xl font-bold text-base-content text-opacity-60" th:text="#{goals}"></h2>
 
             <div class="divider"></div>
         </div>
 
-        <main class=" p-4 flex flex-row flex-wrap justify-center gap-4">
+        <main th:if="${user.role.name() == 'FUNCIONARIO'}" class=" p-4 flex flex-row flex-wrap justify-center gap-4">
             <div th:each="meta : ${metas.content}">
 
                 <button class="card bg-base-300 w-96 rounded-xl text-left shadow-lg hover:shadow-2xl transition-all"
@@ -203,7 +223,7 @@
                 </a>
             </li>
 
-            <li>
+            <li th:if="${user.role.name() == 'FUNCIONARIO'}">
                 <a href="/meta">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.438 60.438 0 0 0-.491 6.347A48.62 48.62 0 0 1 12 20.904a48.62 48.62 0 0 1 8.232-4.41 60.46 60.46 0 0 0-.491-6.347m-15.482 0a50.636 50.636 0 0 0-2.658-.813A59.906 59.906 0 0 1 12 3.493a59.903 59.903 0 0 1 10.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.717 50.717 0 0 1 12 13.489a50.702 50.702 0 0 1 7.74-3.342M6.75 15a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm0 0v-3.675A55.378 55.378 0 0 1 12 8.443m-7.007 11.55A5.981 5.981 0 0 0 6.75 15.75v-1.5" />
@@ -211,7 +231,8 @@
                     <span th:text="#{goals}"></span>
                 </a>
             </li>
-            <li>
+
+            <li th:if="${user.role.name() == 'FUNCIONARIO'}">
                 <a href="/loja">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -219,6 +240,16 @@
                     <span th:text="#{shop}"></span>
                 </a>
             </li>
+
+            <li th:if="${user.role.name() == 'FUNCIONARIO'}">
+                <a href="/loja/inventario">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
+                    </svg>
+                    <span th:text="#{storage}"></span>
+                </a>
+            </li>
+
             <li>
                 <a href="/ranking">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -227,14 +258,7 @@
                     <span th:text="#{ranking}"></span>
                 </a>
             </li>
-            <li>
-                <a href="/loja/inventario">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25" />
-                    </svg>
-                    <span th:text="#{storage}"></span>
-                </a>
-            </li>
+
             <li>
                 <a href="/chat">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -243,7 +267,8 @@
                     <span th:text="#{chatall}"></span>
                 </a>
             </li>
-            <li>
+
+            <li th:if="${user.role.name() == 'ADMIN'}">
                 <a href="/meta/adm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 0 0 2.25-2.25V6.75a2.25 2.25 0 0 0-2.25-2.25H6.75A2.25 2.25 0 0 0 4.5 6.75v10.5a2.25 2.25 0 0 0 2.25 2.25Zm.75-12h9v9h-9v-9Z" />
@@ -251,7 +276,8 @@
                     <span th:text="#{admetas}"></span>
                 </a>
             </li>
-            <li>
+
+            <li th:if="${user.role.name() == 'ADMIN'}">
                 <a href="/loja/adm">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 0 0 2.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 0 0-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-.1-.664m-5.8 0A2.251 2.251 0 0 1 13.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25ZM6.75 12h.008v.008H6.75V12Zm0 3h.008v.008H6.75V15Zm0 3h.008v.008H6.75V18Z" />
@@ -259,6 +285,7 @@
                     <span th:text="#{admrecompensas}"></span>
                 </a>
             </li>
+
         </ul>
     </div>
 </div>
