@@ -27,24 +27,8 @@ public class CompraLojaService {
         this.messageHelper = messageHelper;
     }
 
-    public List<CompraLoja> getAllCompraLojas() {
-        return compraLojaRepository.findAll();
-    }
-
     public CompraLoja save(CompraLoja compraLoja) {
         return compraLojaRepository.save(compraLoja);
-    }
-
-    public void deleteById(Long id) {
-        compraLojaRepository.delete(getCompraLoja(id));
-    }
-
-    public List<CompraLoja> getItensPorUsuario(User usuario) {
-        return compraLojaRepository.findByUsuario(usuario);
-    }
-
-    public List<CompraLoja> getAllComprasSolicitadas(){
-        return compraLojaRepository.findAllByStatusCompra(StatusCompra.SOLICITADO);
     }
 
     public void solicitarResgate(Long idCompra, Long idUsuario) {

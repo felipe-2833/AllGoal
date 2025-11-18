@@ -19,22 +19,12 @@ public class MetaConcluidaService {
 
     private final MetaConcluidaRepository metaConcluidaRepository;
     private final MessageHelper messageHelper;
+    private final NotificationService notificationService;
 
-    public MetaConcluidaService(MetaConcluidaRepository metaConcluidaRepository, MessageHelper messageHelper, UserService userService, UserRepository userRepository) {
+    public MetaConcluidaService(MetaConcluidaRepository metaConcluidaRepository, MessageHelper messageHelper, UserService userService, UserRepository userRepository, NotificationService notificationService) {
         this.metaConcluidaRepository = metaConcluidaRepository;
         this.messageHelper = messageHelper;
-    }
-
-    public List<MetaConcluida> getAllMetaConcluidas() {
-        return metaConcluidaRepository.findAll();
-    }
-
-    public List<MetaConcluida> getAllMetaPendentes(){
-        return metaConcluidaRepository.findAllByStatus(Status.PENDENTE_APROVACAO);
-    }
-
-    public MetaConcluida save(MetaConcluida metaConcluida) {
-        return metaConcluidaRepository.save(metaConcluida);
+        this.notificationService = notificationService;
     }
 
     public void deleteById(Long id) {
@@ -43,6 +33,7 @@ public class MetaConcluidaService {
 
     public void submeterMeta(Long idUsuario, Long idMeta, String justificativa) {
         metaConcluidaRepository.submeterMeta(idUsuario, idMeta, justificativa);
+        notificationService.enviarNotificacao("rm556426@fiap.com.br", "Nova meta submetida!");
     }
 
     public void aprovarMeta(Long idMetaAprovada, String justificativa, String statusClicado){

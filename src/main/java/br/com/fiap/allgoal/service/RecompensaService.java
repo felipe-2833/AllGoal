@@ -14,6 +14,8 @@ import br.com.fiap.allgoal.repository.RecompensaRepository;
 import br.com.fiap.allgoal.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.hibernate.exception.GenericJDBCException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,15 +38,8 @@ public class RecompensaService {
         this.userRepository = userRepository;
     }
 
-    public List<Recompensa> getAllRecompensas() {
-        return recompensaRepository.findAll();
-    }
-
-    public Recompensa save(Recompensa recompensa) {
-        return recompensaRepository.save(recompensa);
-    }
-
     @Transactional
+    @CacheEvict(value = "recompensas", allEntries = true)
     public void deleteById(Long id) {
         Recompensa recompensa = getRecompensa(id);
         List<CompraLoja> compras = compraLojaRepository.findAllByRecompensa(recompensa);
@@ -63,6 +58,7 @@ public class RecompensaService {
     }
 
     @Transactional
+    @CacheEvict(value = "recompensas", allEntries = true)
     public void atualizarRecompensa(Long idRecompensa, String nome, String descricao, Integer estoque, Long custo) {
         try {
             Recompensa recompensa = getRecompensa(idRecompensa);
@@ -77,6 +73,7 @@ public class RecompensaService {
         }
     }
 
+    @Cacheable("recompensas")
     public Page<Recompensa> getAllRecompensas(Pageable pageable) {
         return recompensaRepository.findAll(pageable);
     }
@@ -103,6 +100,7 @@ public class RecompensaService {
     }
 
     @Transactional
+    @CacheEvict(value = "recompensas", allEntries = true)
     public void criarRecompensa(String nome, String descricao, Integer estoque, Long custo) {
         try {
             recompensaRepository.inserirRecompensa(nome, descricao, custo, estoque);

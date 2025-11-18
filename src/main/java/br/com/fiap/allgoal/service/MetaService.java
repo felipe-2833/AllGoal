@@ -28,14 +28,6 @@ public class MetaService {
         this.metaConcluidaRepository = metaConcluidaRepository;
     }
 
-    public List<Meta> getAllMetas() {
-        return metaRepository.findAll();
-    }
-
-    public Meta save(Meta meta) {
-        return metaRepository.save(meta);
-    }
-
     @Transactional
     public void deleteById(Long id) {
         Meta meta = getMeta(id);

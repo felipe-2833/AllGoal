@@ -78,7 +78,7 @@ public class RecompensaController {
                              @RequestParam(defaultValue = "0") int page) {
 
         User usuario = getUsuarioLogado(user);
-        Page<CompraLoja> comprasPage = compraLojaService.getItensPorUsuario(usuario, PageRequest.of(page, 9));
+        Page<CompraLoja> comprasPage = compraLojaService.getItensPorUsuario(usuario, PageRequest.of(page, 8));
 
         model.addAttribute("user", usuario);
         model.addAttribute("compras", comprasPage);
