@@ -8,9 +8,7 @@ O **AllGoal** é uma solução inovadora de engajamento corporativo que utiliza 
 
 A aplicação está implantada na nuvem e pode ser acessada publicamente. O login é feito via autenticação OAuth2 do GitHub.
 
-**Link de Acesso:** **[COLOQUE_AQUI_SEU_LINK_DO_RAILWAY]**
-
-*(Exemplo: https://allgoal-production.up.railway.app)*
+**Link de Acesso:** **[(https://allgoal.onrender.com/login)]**
 
 ---
 
