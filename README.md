@@ -39,6 +39,16 @@ A aplicação está implantada na nuvem e pode ser acessada publicamente. O logi
 
 ---
 
+## 🧠 Módulo de Inteligência Artificial (GenAI)
+
+Este projeto implementa **IA Generativa** integrada nativamente na arquitetura Java Spring Boot.
+
+- **Modelo:** OpenAI GPT-3.5 Turbo / GPT-4o-mini.
+- **Técnica de Prompt Engineering:** Utilização de **Context Injection (RAG Simplificado)**.
+- **Funcionamento:** A aplicação intercepta a mensagem do utilizador e injeta, via *System Message*, os dados em tempo real do banco de dados (Nível, XP, Moedas e Nome). Isso garante que a IA atue como um "Personal Coach" que conhece o estado atual do colaborador, sem alucinações sobre dados inexistentes.
+
+---
+
 ## 👨‍🏫 Guia de Execução (Ambiente de Desenvolvimento Local)
 
 Este guia destina-se ao professor ou avaliador que precisa rodar o projeto localmente.
